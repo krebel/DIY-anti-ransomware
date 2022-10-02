@@ -1,0 +1,4376 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Article started with Mobirise Website Builder v5.6.11, https://mobirise.com then edited with care-->
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- <meta name="generator" content="Mobirise v5.6.11, mobirise.com"> -->
+  <meta name="twitter:card" content="summary_large_image"/>
+  <meta name="twitter:image:src" content="">
+  <meta property="og:image" content="">
+  <meta property="og:type" content="article" />
+  <meta property="og:description" content="tech Rebellian.com® Create an S3 WORM object storage server" />
+  <meta property="og:url" content="https://rebellian.com/articles/s3worm/s3worm.html" />
+  <meta property="og:site_name" content="rebellian.com" />
+  <meta name="twitter:title" content="TMUX - terminal multiplexer">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <meta name="description" content="tech Rebellian.com® Create an S3 WORM object storage server">
+
+
+  <title>DIY ransomware solution</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="assets/web/assets/mobirise-icons2/mobirise2.css">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap-grid.min.css" rel="stylesheet" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap-reboot.min.css rel="stylesheet" crossorigin="anonymous">
+  <link rel="preload" href="https://fonts.googleapis.com/css?family=Jost:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Jost:100,200,300,400,500,600,700,800,900,100i,200i,300i,400i,500i,600i,700i,800i,900i&display=swap"></noscript>
+ 
+  <!-- Begin experimental collapsible content -->
+  <style>
+     /* Style the button that is used to open and close the collapsible content */
+.collapsible {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 1.3rem;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active, .collapsible:hover {
+  background-color: #ccc;
+}
+
+/* Style the collapsible content. Note: hidden by default */
+.collapso {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+} 
+  </style>
+  <!-- End experimental collapsible content -->
+
+
+  <!-- Start dropdown css -->
+ <style>
+.navbar-dropdown {
+  left: 0;
+  padding: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: all 0.45s ease;
+  z-index: 1030;
+  background: #282828; }
+  .navbar-dropdown .navbar-logo {
+    margin-right: 0.8rem;
+    transition: margin 0.3s ease-in-out;
+    vertical-align: middle; }
+    .navbar-dropdown .navbar-logo img {
+      height: 3.125rem;
+      transition: all 0.3s ease-in-out; }
+    .navbar-dropdown .navbar-logo.mbr-iconfont {
+      font-size: 3.125rem;
+      line-height: 3.125rem; }
+  .navbar-dropdown .navbar-caption {
+    font-weight: 700;
+    white-space: normal;
+    vertical-align: -4px;
+    line-height: 3.125rem !important; }
+    .navbar-dropdown .navbar-caption, .navbar-dropdown .navbar-caption:hover {
+      color: inherit;
+      text-decoration: none; }
+  .navbar-dropdown .mbr-iconfont + .navbar-caption {
+    vertical-align: -1px; }
+  .navbar-dropdown.navbar-fixed-top {
+    position: fixed; }
+  .navbar-dropdown .navbar-brand span {
+    vertical-align: -4px; }
+  .navbar-dropdown.bg-color.transparent {
+    background: none; }
+  .navbar-dropdown.navbar-short .navbar-brand {
+    padding: 0.625rem 0; }
+    .navbar-dropdown.navbar-short .navbar-brand span {
+      vertical-align: -1px; }
+  .navbar-dropdown.navbar-short .navbar-caption {
+    line-height: 2.375rem !important;
+    vertical-align: -2px; }
+  .navbar-dropdown.navbar-short .navbar-logo {
+    margin-right: 0.5rem; }
+    .navbar-dropdown.navbar-short .navbar-logo img {
+      height: 2.375rem; }
+    .navbar-dropdown.navbar-short .navbar-logo.mbr-iconfont {
+      font-size: 2.375rem;
+      line-height: 2.375rem; }
+  .navbar-dropdown.navbar-short .mbr-table-cell {
+    height: 3.625rem; }
+  .navbar-dropdown .navbar-close {
+    left: 0.6875rem;
+    position: fixed;
+    top: 0.75rem;
+    z-index: 1000; }
+  .navbar-dropdown .hamburger-icon {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    width: 16px;
+    -webkit-box-shadow: 0 -6px 0 1px #282828,0 0 0 1px #282828,0 6px 0 1px #282828;
+    -moz-box-shadow: 0 -6px 0 1px #282828,0 0 0 1px #282828,0 6px 0 1px #282828;
+    box-shadow: 0 -6px 0 1px #282828,0 0 0 1px #282828,0 6px 0 1px #282828; }
+
+.dropdown-menu .dropdown-toggle[data-toggle="dropdown-submenu"]::after {
+  border-bottom: 0.35em solid transparent;
+  border-left: 0.35em solid;
+  border-right: 0;
+  border-top: 0.35em solid transparent;
+  margin-left: 0.3rem; }
+
+.dropdown-menu .dropdown-item:focus {
+  outline: 0; }
+
+.nav-dropdown {
+  font-size: 0.75rem;
+  font-weight: 500;
+  height: auto !important; }
+  .nav-dropdown .nav-btn {
+    padding-left: 1rem; }
+  .nav-dropdown .link {
+    margin: .667em 1.667em;
+    font-weight: 500;
+    padding: 0;
+    transition: color .2s ease-in-out; }
+    .nav-dropdown .link.dropdown-toggle {
+      margin-right: 2.583em; }
+      .nav-dropdown .link.dropdown-toggle::after {
+        margin-left: .25rem;
+        border-top: 0.35em solid;
+        border-right: 0.35em solid transparent;
+        border-left: 0.35em solid transparent;
+        border-bottom: 0; }
+      .nav-dropdown .link.dropdown-toggle[aria-expanded="true"] {
+        margin: 0;
+        padding: 0.667em 3.263em  0.667em 1.667em; }
+  .nav-dropdown .link::after,
+  .nav-dropdown .dropdown-item::after {
+    color: inherit; }
+  .nav-dropdown .btn {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    margin-bottom: 0;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem; }
+  .nav-dropdown .dropdown-menu {
+    border-radius: 0;
+    border: 0;
+    left: 0;
+    margin: 0;
+    padding-bottom: 1.25rem;
+    padding-top: 1.25rem;
+    position: relative; }
+  .nav-dropdown .dropdown-submenu {
+    margin-left: 0.125rem;
+    top: 0; }
+  .nav-dropdown .dropdown-item {
+    font-weight: 500;
+    line-height: 2;
+    padding: 0.3846em 4.615em 0.3846em 1.5385em;
+    position: relative;
+    transition: color .2s ease-in-out, background-color .2s ease-in-out; }
+    .nav-dropdown .dropdown-item::after {
+      margin-top: -0.3077em;
+      position: absolute;
+      right: 1.1538em;
+      top: 50%; }
+    .nav-dropdown .dropdown-item:focus, .nav-dropdown .dropdown-item:hover {
+      background: none; }
+
+@media (max-width: 767px) {
+  .nav-dropdown.navbar-toggleable-sm {
+    bottom: 0;
+    display: none;
+    left: 0;
+    overflow-x: hidden;
+    position: fixed;
+    top: 0;
+    transform: translateX(-100%);
+    -ms-transform: translateX(-100%);
+    -webkit-transform: translateX(-100%);
+    width: 18.75rem;
+    z-index: 999; } }
+.nav-dropdown.navbar-toggleable-xl {
+  bottom: 0;
+  display: none;
+  left: 0;
+  overflow-x: hidden;
+  position: fixed;
+  top: 0;
+  transform: translateX(-100%);
+  -ms-transform: translateX(-100%);
+  -webkit-transform: translateX(-100%);
+  width: 18.75rem;
+  z-index: 999; }
+
+.nav-dropdown-sm {
+  display: block !important;
+  overflow-x: hidden;
+  overflow: auto;
+  padding-top: 3.875rem; }
+  .nav-dropdown-sm::after {
+    content: "";
+    display: block;
+    height: 3rem;
+    width: 100%; }
+  .nav-dropdown-sm.collapse.in ~ .navbar-close {
+    display: block !important; }
+  .nav-dropdown-sm.collapsing, .nav-dropdown-sm.collapse.in {
+    transform: translateX(0);
+    -ms-transform: translateX(0);
+    -webkit-transform: translateX(0);
+    transition: all 0.25s ease-out;
+    -webkit-transition: all 0.25s ease-out;
+    background: #282828; }
+  .nav-dropdown-sm.collapsing[aria-expanded="false"] {
+    transform: translateX(-100%);
+    -ms-transform: translateX(-100%);
+    -webkit-transform: translateX(-100%); }
+  .nav-dropdown-sm .nav-item {
+    display: block;
+    margin-left: 0 !important;
+    padding-left: 0; }
+  .nav-dropdown-sm .link,
+  .nav-dropdown-sm .dropdown-item {
+    border-top: 1px dotted rgba(255, 255, 255, 0.1);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    margin: 0 !important;
+    padding: 0.875rem 2.4rem 0.875rem 1.5625rem !important;
+    position: relative;
+    white-space: normal; }
+    .nav-dropdown-sm .link:focus, .nav-dropdown-sm .link:hover,
+    .nav-dropdown-sm .dropdown-item:focus,
+    .nav-dropdown-sm .dropdown-item:hover {
+      background: rgba(0, 0, 0, 0.2) !important;
+      color: #c0a375; }
+  .nav-dropdown-sm .nav-btn {
+    position: relative;
+    padding: 1.5625rem 1.5625rem 0 1.5625rem; }
+    .nav-dropdown-sm .nav-btn::before {
+      border-top: 1px dotted rgba(255, 255, 255, 0.1);
+      content: "";
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 100%; }
+    .nav-dropdown-sm .nav-btn + .nav-btn {
+      padding-top: 0.625rem; }
+      .nav-dropdown-sm .nav-btn + .nav-btn::before {
+        display: none; }
+  .nav-dropdown-sm .btn {
+    padding: 0.625rem 0; }
+  .nav-dropdown-sm .dropdown-toggle[data-toggle="dropdown-submenu"]::after {
+    margin-left: .25rem;
+    border-top: 0.35em solid;
+    border-right: 0.35em solid transparent;
+    border-left: 0.35em solid transparent;
+    border-bottom: 0; }
+  .nav-dropdown-sm .dropdown-toggle[data-toggle="dropdown-submenu"][aria-expanded="true"]::after {
+    border-top: 0;
+    border-right: 0.35em solid transparent;
+    border-left: 0.35em solid transparent;
+    border-bottom: 0.35em solid; }
+  .nav-dropdown-sm .dropdown-menu {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    border: 0;
+    float: none;
+    border-radius: 0;
+    background: none; }
+  .nav-dropdown-sm .dropdown-submenu {
+    left: 100%;
+    margin-left: 0.125rem;
+    margin-top: -1.25rem;
+    top: 0; }
+
+.navbar-toggleable-sm .nav-dropdown .dropdown-menu {
+  position: absolute; }
+
+.navbar-toggleable-sm .nav-dropdown .dropdown-submenu {
+  left: 100%;
+  margin-left: 0.125rem;
+  margin-top: -1.25rem;
+  top: 0; }
+
+.navbar-toggleable-sm.opened .nav-dropdown .dropdown-menu {
+  position: relative; }
+
+.navbar-toggleable-sm.opened .nav-dropdown .dropdown-submenu {
+  left: 0;
+  margin-left: 00rem;
+  margin-top: 0rem;
+  top: 0; }
+
+.is-builder .nav-dropdown.collapsing {
+  transition: none !important; }
+ </style> 
+  <!-- End dropdown css -->
+
+
+
+
+  <!--  Start socicon style css  -->
+
+<style>
+  @charset "UTF-8";
+
+@font-face {
+  font-family: 'Socicon';
+  src:  url('../fonts/socicon.eot');
+  src:  url('../fonts/socicon.eot?#iefix') format('embedded-opentype'),
+    url('../fonts/socicon.woff2') format('woff2'),
+    url('../fonts/socicon.ttf') format('truetype'),
+    url('../fonts/socicon.woff') format('woff'),
+    url('../fonts/socicon.svg#socicon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+[data-icon]:before {
+  font-family: "socicon" !important;
+  content: attr(data-icon);
+  font-style: normal !important;
+  font-weight: normal !important;
+  font-variant: normal !important;
+  text-transform: none !important;
+  speak: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="socicon-"], [class*=" socicon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'Socicon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.socicon-eitaa:before {
+  content: "\e97c";
+}
+.socicon-soroush:before {
+  content: "\e97d";
+}
+.socicon-bale:before {
+  content: "\e97e";
+}
+.socicon-zazzle:before {
+  content: "\e97b";
+}
+.socicon-society6:before {
+  content: "\e97a";
+}
+.socicon-redbubble:before {
+  content: "\e979";
+}
+.socicon-avvo:before {
+  content: "\e978";
+}
+.socicon-stitcher:before {
+  content: "\e977";
+}
+.socicon-googlehangouts:before {
+  content: "\e974";
+}
+.socicon-dlive:before {
+  content: "\e975";
+}
+.socicon-vsco:before {
+  content: "\e976";
+}
+.socicon-flipboard:before {
+  content: "\e973";
+}
+.socicon-ubuntu:before {
+  content: "\e958";
+}
+.socicon-artstation:before {
+  content: "\e959";
+}
+.socicon-invision:before {
+  content: "\e95a";
+}
+.socicon-torial:before {
+  content: "\e95b";
+}
+.socicon-collectorz:before {
+  content: "\e95c";
+}
+.socicon-seenthis:before {
+  content: "\e95d";
+}
+.socicon-googleplaymusic:before {
+  content: "\e95e";
+}
+.socicon-debian:before {
+  content: "\e95f";
+}
+.socicon-filmfreeway:before {
+  content: "\e960";
+}
+.socicon-gnome:before {
+  content: "\e961";
+}
+.socicon-itchio:before {
+  content: "\e962";
+}
+.socicon-jamendo:before {
+  content: "\e963";
+}
+.socicon-mix:before {
+  content: "\e964";
+}
+.socicon-sharepoint:before {
+  content: "\e965";
+}
+.socicon-tinder:before {
+  content: "\e966";
+}
+.socicon-windguru:before {
+  content: "\e967";
+}
+.socicon-cdbaby:before {
+  content: "\e968";
+}
+.socicon-elementaryos:before {
+  content: "\e969";
+}
+.socicon-stage32:before {
+  content: "\e96a";
+}
+.socicon-tiktok:before {
+  content: "\e96b";
+}
+.socicon-gitter:before {
+  content: "\e96c";
+}
+.socicon-letterboxd:before {
+  content: "\e96d";
+}
+.socicon-threema:before {
+  content: "\e96e";
+}
+.socicon-splice:before {
+  content: "\e96f";
+}
+.socicon-metapop:before {
+  content: "\e970";
+}
+.socicon-naver:before {
+  content: "\e971";
+}
+.socicon-remote:before {
+  content: "\e972";
+}
+.socicon-internet:before {
+  content: "\e957";
+}
+.socicon-moddb:before {
+  content: "\e94b";
+}
+.socicon-indiedb:before {
+  content: "\e94c";
+}
+.socicon-traxsource:before {
+  content: "\e94d";
+}
+.socicon-gamefor:before {
+  content: "\e94e";
+}
+.socicon-pixiv:before {
+  content: "\e94f";
+}
+.socicon-myanimelist:before {
+  content: "\e950";
+}
+.socicon-blackberry:before {
+  content: "\e951";
+}
+.socicon-wickr:before {
+  content: "\e952";
+}
+.socicon-spip:before {
+  content: "\e953";
+}
+.socicon-napster:before {
+  content: "\e954";
+}
+.socicon-beatport:before {
+  content: "\e955";
+}
+.socicon-hackerone:before {
+  content: "\e956";
+}
+.socicon-hackernews:before {
+  content: "\e946";
+}
+.socicon-smashwords:before {
+  content: "\e947";
+}
+.socicon-kobo:before {
+  content: "\e948";
+}
+.socicon-bookbub:before {
+  content: "\e949";
+}
+.socicon-mailru:before {
+  content: "\e94a";
+}
+.socicon-gitlab:before {
+  content: "\e945";
+}
+.socicon-instructables:before {
+  content: "\e944";
+}
+.socicon-portfolio:before {
+  content: "\e943";
+}
+.socicon-codered:before {
+  content: "\e940";
+}
+.socicon-origin:before {
+  content: "\e941";
+}
+.socicon-nextdoor:before {
+  content: "\e942";
+}
+.socicon-udemy:before {
+  content: "\e93f";
+}
+.socicon-livemaster:before {
+  content: "\e93e";
+}
+.socicon-crunchbase:before {
+  content: "\e93b";
+}
+.socicon-homefy:before {
+  content: "\e93c";
+}
+.socicon-calendly:before {
+  content: "\e93d";
+}
+.socicon-realtor:before {
+  content: "\e90f";
+}
+.socicon-tidal:before {
+  content: "\e910";
+}
+.socicon-qobuz:before {
+  content: "\e911";
+}
+.socicon-natgeo:before {
+  content: "\e912";
+}
+.socicon-mastodon:before {
+  content: "\e913";
+}
+.socicon-unsplash:before {
+  content: "\e914";
+}
+.socicon-homeadvisor:before {
+  content: "\e915";
+}
+.socicon-angieslist:before {
+  content: "\e916";
+}
+.socicon-codepen:before {
+  content: "\e917";
+}
+.socicon-slack:before {
+  content: "\e918";
+}
+.socicon-openaigym:before {
+  content: "\e919";
+}
+.socicon-logmein:before {
+  content: "\e91a";
+}
+.socicon-fiverr:before {
+  content: "\e91b";
+}
+.socicon-gotomeeting:before {
+  content: "\e91c";
+}
+.socicon-aliexpress:before {
+  content: "\e91d";
+}
+.socicon-guru:before {
+  content: "\e91e";
+}
+.socicon-appstore:before {
+  content: "\e91f";
+}
+.socicon-homes:before {
+  content: "\e920";
+}
+.socicon-zoom:before {
+  content: "\e921";
+}
+.socicon-alibaba:before {
+  content: "\e922";
+}
+.socicon-craigslist:before {
+  content: "\e923";
+}
+.socicon-wix:before {
+  content: "\e924";
+}
+.socicon-redfin:before {
+  content: "\e925";
+}
+.socicon-googlecalendar:before {
+  content: "\e926";
+}
+.socicon-shopify:before {
+  content: "\e927";
+}
+.socicon-freelancer:before {
+  content: "\e928";
+}
+.socicon-seedrs:before {
+  content: "\e929";
+}
+.socicon-bing:before {
+  content: "\e92a";
+}
+.socicon-doodle:before {
+  content: "\e92b";
+}
+.socicon-bonanza:before {
+  content: "\e92c";
+}
+.socicon-squarespace:before {
+  content: "\e92d";
+}
+.socicon-toptal:before {
+  content: "\e92e";
+}
+.socicon-gust:before {
+  content: "\e92f";
+}
+.socicon-ask:before {
+  content: "\e930";
+}
+.socicon-trulia:before {
+  content: "\e931";
+}
+.socicon-loomly:before {
+  content: "\e932";
+}
+.socicon-ghost:before {
+  content: "\e933";
+}
+.socicon-upwork:before {
+  content: "\e934";
+}
+.socicon-fundable:before {
+  content: "\e935";
+}
+.socicon-booking:before {
+  content: "\e936";
+}
+.socicon-googlemaps:before {
+  content: "\e937";
+}
+.socicon-zillow:before {
+  content: "\e938";
+}
+.socicon-niconico:before {
+  content: "\e939";
+}
+.socicon-toneden:before {
+  content: "\e93a";
+}
+.socicon-augment:before {
+  content: "\e908";
+}
+.socicon-bitbucket:before {
+  content: "\e909";
+}
+.socicon-fyuse:before {
+  content: "\e90a";
+}
+.socicon-yt-gaming:before {
+  content: "\e90b";
+}
+.socicon-sketchfab:before {
+  content: "\e90c";
+}
+.socicon-mobcrush:before {
+  content: "\e90d";
+}
+.socicon-microsoft:before {
+  content: "\e90e";
+}
+.socicon-pandora:before {
+  content: "\e907";
+}
+.socicon-messenger:before {
+  content: "\e906";
+}
+.socicon-gamewisp:before {
+  content: "\e905";
+}
+.socicon-bloglovin:before {
+  content: "\e904";
+}
+.socicon-tunein:before {
+  content: "\e903";
+}
+.socicon-gamejolt:before {
+  content: "\e901";
+}
+.socicon-trello:before {
+  content: "\e902";
+}
+.socicon-spreadshirt:before {
+  content: "\e900";
+}
+.socicon-500px:before {
+  content: "\e000";
+}
+.socicon-8tracks:before {
+  content: "\e001";
+}
+.socicon-airbnb:before {
+  content: "\e002";
+}
+.socicon-alliance:before {
+  content: "\e003";
+}
+.socicon-amazon:before {
+  content: "\e004";
+}
+.socicon-amplement:before {
+  content: "\e005";
+}
+.socicon-android:before {
+  content: "\e006";
+}
+.socicon-angellist:before {
+  content: "\e007";
+}
+.socicon-apple:before {
+  content: "\e008";
+}
+.socicon-appnet:before {
+  content: "\e009";
+}
+.socicon-baidu:before {
+  content: "\e00a";
+}
+.socicon-bandcamp:before {
+  content: "\e00b";
+}
+.socicon-battlenet:before {
+  content: "\e00c";
+}
+.socicon-mixer:before {
+  content: "\e00d";
+}
+.socicon-bebee:before {
+  content: "\e00e";
+}
+.socicon-bebo:before {
+  content: "\e00f";
+}
+.socicon-behance:before {
+  content: "\e010";
+}
+.socicon-blizzard:before {
+  content: "\e011";
+}
+.socicon-blogger:before {
+  content: "\e012";
+}
+.socicon-buffer:before {
+  content: "\e013";
+}
+.socicon-chrome:before {
+  content: "\e014";
+}
+.socicon-coderwall:before {
+  content: "\e015";
+}
+.socicon-curse:before {
+  content: "\e016";
+}
+.socicon-dailymotion:before {
+  content: "\e017";
+}
+.socicon-deezer:before {
+  content: "\e018";
+}
+.socicon-delicious:before {
+  content: "\e019";
+}
+.socicon-deviantart:before {
+  content: "\e01a";
+}
+.socicon-diablo:before {
+  content: "\e01b";
+}
+.socicon-digg:before {
+  content: "\e01c";
+}
+.socicon-discord:before {
+  content: "\e01d";
+}
+.socicon-disqus:before {
+  content: "\e01e";
+}
+.socicon-douban:before {
+  content: "\e01f";
+}
+.socicon-draugiem:before {
+  content: "\e020";
+}
+.socicon-dribbble:before {
+  content: "\e021";
+}
+.socicon-drupal:before {
+  content: "\e022";
+}
+.socicon-ebay:before {
+  content: "\e023";
+}
+.socicon-ello:before {
+  content: "\e024";
+}
+.socicon-endomodo:before {
+  content: "\e025";
+}
+.socicon-envato:before {
+  content: "\e026";
+}
+.socicon-etsy:before {
+  content: "\e027";
+}
+.socicon-facebook:before {
+  content: "\e028";
+}
+.socicon-feedburner:before {
+  content: "\e029";
+}
+.socicon-filmweb:before {
+  content: "\e02a";
+}
+.socicon-firefox:before {
+  content: "\e02b";
+}
+.socicon-flattr:before {
+  content: "\e02c";
+}
+.socicon-flickr:before {
+  content: "\e02d";
+}
+.socicon-formulr:before {
+  content: "\e02e";
+}
+.socicon-forrst:before {
+  content: "\e02f";
+}
+.socicon-foursquare:before {
+  content: "\e030";
+}
+.socicon-friendfeed:before {
+  content: "\e031";
+}
+.socicon-github:before {
+  content: "\e032";
+}
+.socicon-goodreads:before {
+  content: "\e033";
+}
+.socicon-google:before {
+  content: "\e034";
+}
+.socicon-googlescholar:before {
+  content: "\e035";
+}
+.socicon-googlegroups:before {
+  content: "\e036";
+}
+.socicon-googlephotos:before {
+  content: "\e037";
+}
+.socicon-googleplus:before {
+  content: "\e038";
+}
+.socicon-grooveshark:before {
+  content: "\e039";
+}
+.socicon-hackerrank:before {
+  content: "\e03a";
+}
+.socicon-hearthstone:before {
+  content: "\e03b";
+}
+.socicon-hellocoton:before {
+  content: "\e03c";
+}
+.socicon-heroes:before {
+  content: "\e03d";
+}
+.socicon-smashcast:before {
+  content: "\e03e";
+}
+.socicon-horde:before {
+  content: "\e03f";
+}
+.socicon-houzz:before {
+  content: "\e040";
+}
+.socicon-icq:before {
+  content: "\e041";
+}
+.socicon-identica:before {
+  content: "\e042";
+}
+.socicon-imdb:before {
+  content: "\e043";
+}
+.socicon-instagram:before {
+  content: "\e044";
+}
+.socicon-issuu:before {
+  content: "\e045";
+}
+.socicon-istock:before {
+  content: "\e046";
+}
+.socicon-itunes:before {
+  content: "\e047";
+}
+.socicon-keybase:before {
+  content: "\e048";
+}
+.socicon-lanyrd:before {
+  content: "\e049";
+}
+.socicon-lastfm:before {
+  content: "\e04a";
+}
+.socicon-line:before {
+  content: "\e04b";
+}
+.socicon-linkedin:before {
+  content: "\e04c";
+}
+.socicon-livejournal:before {
+  content: "\e04d";
+}
+.socicon-lyft:before {
+  content: "\e04e";
+}
+.socicon-macos:before {
+  content: "\e04f";
+}
+.socicon-mail:before {
+  content: "\e050";
+}
+.socicon-medium:before {
+  content: "\e051";
+}
+.socicon-meetup:before {
+  content: "\e052";
+}
+.socicon-mixcloud:before {
+  content: "\e053";
+}
+.socicon-modelmayhem:before {
+  content: "\e054";
+}
+.socicon-mumble:before {
+  content: "\e055";
+}
+.socicon-myspace:before {
+  content: "\e056";
+}
+.socicon-newsvine:before {
+  content: "\e057";
+}
+.socicon-nintendo:before {
+  content: "\e058";
+}
+.socicon-npm:before {
+  content: "\e059";
+}
+.socicon-odnoklassniki:before {
+  content: "\e05a";
+}
+.socicon-openid:before {
+  content: "\e05b";
+}
+.socicon-opera:before {
+  content: "\e05c";
+}
+.socicon-outlook:before {
+  content: "\e05d";
+}
+.socicon-overwatch:before {
+  content: "\e05e";
+}
+.socicon-patreon:before {
+  content: "\e05f";
+}
+.socicon-paypal:before {
+  content: "\e060";
+}
+.socicon-periscope:before {
+  content: "\e061";
+}
+.socicon-persona:before {
+  content: "\e062";
+}
+.socicon-pinterest:before {
+  content: "\e063";
+}
+.socicon-play:before {
+  content: "\e064";
+}
+.socicon-player:before {
+  content: "\e065";
+}
+.socicon-playstation:before {
+  content: "\e066";
+}
+.socicon-pocket:before {
+  content: "\e067";
+}
+.socicon-qq:before {
+  content: "\e068";
+}
+.socicon-quora:before {
+  content: "\e069";
+}
+.socicon-raidcall:before {
+  content: "\e06a";
+}
+.socicon-ravelry:before {
+  content: "\e06b";
+}
+.socicon-reddit:before {
+  content: "\e06c";
+}
+.socicon-renren:before {
+  content: "\e06d";
+}
+.socicon-researchgate:before {
+  content: "\e06e";
+}
+.socicon-residentadvisor:before {
+  content: "\e06f";
+}
+.socicon-reverbnation:before {
+  content: "\e070";
+}
+.socicon-rss:before {
+  content: "\e071";
+}
+.socicon-sharethis:before {
+  content: "\e072";
+}
+.socicon-skype:before {
+  content: "\e073";
+}
+.socicon-slideshare:before {
+  content: "\e074";
+}
+.socicon-smugmug:before {
+  content: "\e075";
+}
+.socicon-snapchat:before {
+  content: "\e076";
+}
+.socicon-songkick:before {
+  content: "\e077";
+}
+.socicon-soundcloud:before {
+  content: "\e078";
+}
+.socicon-spotify:before {
+  content: "\e079";
+}
+.socicon-stackexchange:before {
+  content: "\e07a";
+}
+.socicon-stackoverflow:before {
+  content: "\e07b";
+}
+.socicon-starcraft:before {
+  content: "\e07c";
+}
+.socicon-stayfriends:before {
+  content: "\e07d";
+}
+.socicon-steam:before {
+  content: "\e07e";
+}
+.socicon-storehouse:before {
+  content: "\e07f";
+}
+.socicon-strava:before {
+  content: "\e080";
+}
+.socicon-streamjar:before {
+  content: "\e081";
+}
+.socicon-stumbleupon:before {
+  content: "\e082";
+}
+.socicon-swarm:before {
+  content: "\e083";
+}
+.socicon-teamspeak:before {
+  content: "\e084";
+}
+.socicon-teamviewer:before {
+  content: "\e085";
+}
+.socicon-technorati:before {
+  content: "\e086";
+}
+.socicon-telegram:before {
+  content: "\e087";
+}
+.socicon-tripadvisor:before {
+  content: "\e088";
+}
+.socicon-tripit:before {
+  content: "\e089";
+}
+.socicon-triplej:before {
+  content: "\e08a";
+}
+.socicon-tumblr:before {
+  content: "\e08b";
+}
+.socicon-twitch:before {
+  content: "\e08c";
+}
+.socicon-twitter:before {
+  content: "\e08d";
+}
+.socicon-uber:before {
+  content: "\e08e";
+}
+.socicon-ventrilo:before {
+  content: "\e08f";
+}
+.socicon-viadeo:before {
+  content: "\e090";
+}
+.socicon-viber:before {
+  content: "\e091";
+}
+.socicon-viewbug:before {
+  content: "\e092";
+}
+.socicon-vimeo:before {
+  content: "\e093";
+}
+.socicon-vine:before {
+  content: "\e094";
+}
+.socicon-vkontakte:before {
+  content: "\e095";
+}
+.socicon-warcraft:before {
+  content: "\e096";
+}
+.socicon-wechat:before {
+  content: "\e097";
+}
+.socicon-weibo:before {
+  content: "\e098";
+}
+.socicon-whatsapp:before {
+  content: "\e099";
+}
+.socicon-wikipedia:before {
+  content: "\e09a";
+}
+.socicon-windows:before {
+  content: "\e09b";
+}
+.socicon-wordpress:before {
+  content: "\e09c";
+}
+.socicon-wykop:before {
+  content: "\e09d";
+}
+.socicon-xbox:before {
+  content: "\e09e";
+}
+.socicon-xing:before {
+  content: "\e09f";
+}
+.socicon-yahoo:before {
+  content: "\e0a0";
+}
+.socicon-yammer:before {
+  content: "\e0a1";
+}
+.socicon-yandex:before {
+  content: "\e0a2";
+}
+.socicon-yelp:before {
+  content: "\e0a3";
+}
+.socicon-younow:before {
+  content: "\e0a4";
+}
+.socicon-youtube:before {
+  content: "\e0a5";
+}
+.socicon-zapier:before {
+  content: "\e0a6";
+}
+.socicon-zerply:before {
+  content: "\e0a7";
+}
+.socicon-zomato:before {
+  content: "\e0a8";
+}
+.socicon-zynga:before {
+  content: "\e0a9";
+}
+</style>
+
+  <!--  End socicon style css    -->
+
+
+
+  <!-- Start theme css -->
+<style>
+@charset "UTF-8";
+section {
+  background-color: #ffffff;
+}
+
+body {
+  font-style: normal;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #232323;
+  position: relative;
+}
+
+button {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+section,
+.container,
+.container-fluid {
+  position: relative;
+  word-wrap: break-word;
+}
+
+.codeout {
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+}
+
+.cmdex{
+	font-style: italic;
+	font-weight: 600;
+}	
+
+a.mbr-iconfont:hover {
+  text-decoration: none;
+}
+
+.article .lead p,
+.article .lead ul,
+.article .lead ol,
+.article .lead pre,
+.article .lead blockquote {
+  margin-bottom: 0;
+}
+
+a {
+  font-style: normal;
+  font-weight: 400;
+  cursor: pointer;
+}
+a, a:hover {
+  text-decoration: none;
+}
+
+.mbr-section-title {
+  font-style: normal;
+  line-height: 1.3;
+}
+
+.mbr-section-subtitle {
+  line-height: 1.3;
+}
+
+.mbr-text {
+  font-style: normal;
+  line-height: 1.7;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.display-1,
+.display-2,
+.display-4,
+.display-5,
+.display-7,
+span,
+p,
+a {
+  line-height: 1;
+  word-break: break-word;
+  word-wrap: break-word;
+  font-weight: 400;
+}
+
+b,
+strong {
+  font-weight: bold;
+}
+
+input:-webkit-autofill, input:-webkit-autofill:hover, input:-webkit-autofill:focus, input:-webkit-autofill:active {
+  transition-delay: 9999s;
+  -webkit-transition-property: background-color, color;
+  transition-property: background-color, color;
+}
+
+textarea[type=hidden] {
+  display: none;
+}
+
+section {
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+section .mbr-background-video,
+section .mbr-background-video-preview {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.mbr-z-index20 {
+  z-index: 20;
+}
+
+/*! Base colors */
+.mbr-white {
+  color: #ffffff;
+}
+
+.mbr-black {
+  color: #111111;
+}
+
+.mbr-bg-white {
+  background-color: #ffffff;
+}
+
+.mbr-bg-black {
+  background-color: #000000;
+}
+
+/*! Text-aligns */
+.align-left {
+  text-align: left;
+}
+
+.align-center {
+  text-align: center;
+}
+
+.align-right {
+  text-align: right;
+}
+
+/*! Font-weight  */
+.mbr-light {
+  font-weight: 300;
+}
+
+.mbr-regular {
+  font-weight: 400;
+}
+
+.mbr-semibold {
+  font-weight: 500;
+}
+
+.mbr-bold {
+  font-weight: 700;
+}
+
+/*! Media  */
+.media-content {
+  flex-basis: 100%;
+}
+
+.media-container-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  align-items: start;
+}
+.media-container-row .media-size-item {
+  width: 400px;
+}
+
+.media-container-column {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  align-items: stretch;
+}
+.media-container-column > * {
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+  .media-container-row {
+    flex-wrap: nowrap;
+  }
+}
+figure {
+  margin-bottom: 0;
+  overflow: hidden;
+}
+
+figure[mbr-media-size] {
+  transition: width 0.1s;
+}
+
+img,
+iframe {
+  display: block;
+  width: 100%;
+}
+
+.card {
+  background-color: transparent;
+  border: none;
+  height: 10rem;
+}
+
+.card-box {
+  width: 100%;
+  height: 10rem;
+}
+
+.card-img {
+  text-align: center;
+  flex-shrink: 0;
+  -webkit-flex-shrink: 0;
+}
+
+.media {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.mbr-figure {
+  align-self: center;
+}
+
+.media-container > div {
+  max-width: 100%;
+}
+
+.mbr-figure img,
+.card-img img {
+  width: 100%;
+  
+}
+
+@media (max-width: 991px) {
+  .media-size-item {
+    width: auto !important;
+  }
+
+  .media {
+    width: auto;
+  }
+
+  .mbr-figure {
+    width: 100% !important;
+  }
+}
+/*! Buttons */
+.mbr-section-btn {
+  margin-left: -0.6rem;
+  margin-right: -0.6rem;
+  font-size: 0;
+}
+
+.btn {
+  font-weight: 600;
+  border-width: 1px;
+  font-style: normal;
+  margin: 0.6rem 0.6rem;
+  white-space: normal;
+  transition: all 0.2s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  word-break: break-word;
+}
+
+.btn-sm {
+  font-weight: 600;
+  letter-spacing: 0px;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-md {
+  font-weight: 600;
+  letter-spacing: 0px;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-lg {
+  font-weight: 600;
+  letter-spacing: 0px;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-form {
+  margin: 0;
+}
+.btn-form:hover {
+  cursor: pointer;
+}
+
+nav .mbr-section-btn {
+  margin-left: 0rem;
+  margin-right: 0rem;
+}
+
+/*! Btn icon margin */
+.btn .mbr-iconfont,
+.btn.btn-sm .mbr-iconfont {
+  order: 1;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  vertical-align: sub;
+}
+
+.btn.btn-md .mbr-iconfont,
+.btn.btn-md .mbr-iconfont {
+  margin-left: 0.8rem;
+}
+
+.mbr-regular {
+  font-weight: 400;
+}
+
+.mbr-semibold {
+  font-weight: 500;
+}
+
+.mbr-bold {
+  font-weight: 700;
+}
+
+[type=submit] {
+  -webkit-appearance: none;
+}
+
+/*! Full-screen */
+.mbr-fullscreen .mbr-overlay {
+  min-height: 100vh;
+}
+
+.mbr-fullscreen {
+  display: flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
+  align-items: center;
+  min-height: 100vh;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+/*! Map */
+.map {
+  height: 25rem;
+  position: relative;
+}
+.map iframe {
+  width: 100%;
+  height: 100%;
+}
+
+/*! Scroll to top arrow */
+.mbr-arrow-up {
+  bottom: 25px;
+  right: 90px;
+  position: fixed;
+  text-align: right;
+  z-index: 5000;
+  color: #ffffff;
+  font-size: 22px;
+}
+
+.mbr-arrow-up a {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  color: #fff;
+  display: inline-block;
+  height: 60px;
+  width: 60px;
+  border: 2px solid #fff;
+  outline-style: none !important;
+  position: relative;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  text-align: center;
+}
+.mbr-arrow-up a:hover {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.mbr-arrow-up a i {
+  line-height: 60px;
+}
+
+.mbr-arrow-up-icon {
+  display: block;
+  color: #fff;
+}
+
+.mbr-arrow-up-icon::before {
+  content: "›";
+  display: inline-block;
+  font-family: serif;
+  font-size: 22px;
+  line-height: 1;
+  font-style: normal;
+  position: relative;
+  top: 6px;
+  left: -4px;
+  transform: rotate(-90deg);
+}
+
+/*! Arrow Down */
+.mbr-arrow {
+  position: absolute;
+  bottom: 45px;
+  left: 50%;
+  width: 60px;
+  height: 60px;
+  cursor: pointer;
+  background-color: rgba(80, 80, 80, 0.5);
+  border-radius: 50%;
+  transform: translateX(-50%);
+}
+@media (max-width: 767px) {
+  .mbr-arrow {
+    display: none;
+  }
+}
+.mbr-arrow > a {
+  display: inline-block;
+  text-decoration: none;
+  outline-style: none;
+  -webkit-animation: arrowdown 1.7s ease-in-out infinite;
+          animation: arrowdown 1.7s ease-in-out infinite;
+  color: #ffffff;
+}
+.mbr-arrow > a > i {
+  position: absolute;
+  top: -2px;
+  left: 15px;
+  font-size: 2rem;
+}
+
+#scrollToTop a i::before {
+  content: "";
+  position: absolute;
+  display: block;
+  border-bottom: 2.5px solid #fff;
+  border-left: 2.5px solid #fff;
+  width: 27.8%;
+  height: 27.8%;
+  left: 50%;
+  top: 51%;
+  transform: translateY(-30%) translateX(-50%) rotate(135deg);
+}
+
+@keyframes arrowdown {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+@-webkit-keyframes arrowdown {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+@media (max-width: 500px) {
+  .mbr-arrow-up {
+    left: 0;
+    right: 0;
+    text-align: center;
+  }
+}
+/*Gradients animation*/
+@keyframes gradient-animation {
+  from {
+    background-position: 0% 100%;
+    -webkit-animation-timing-function: ease-in-out;
+            animation-timing-function: ease-in-out;
+  }
+  to {
+    background-position: 100% 0%;
+    -webkit-animation-timing-function: ease-in-out;
+            animation-timing-function: ease-in-out;
+  }
+}
+@-webkit-keyframes gradient-animation {
+  from {
+    background-position: 0% 100%;
+    -webkit-animation-timing-function: ease-in-out;
+            animation-timing-function: ease-in-out;
+  }
+  to {
+    background-position: 100% 0%;
+    -webkit-animation-timing-function: ease-in-out;
+            animation-timing-function: ease-in-out;
+  }
+}
+.bg-gradient {
+  background-size: 200% 200%;
+  animation: gradient-animation 5s infinite alternate;
+  -webkit-animation: gradient-animation 5s infinite alternate;
+}
+
+.menu .navbar-brand {
+  display: -webkit-flex;
+}
+.menu .navbar-brand span {
+  display: flex;
+  display: -webkit-flex;
+}
+.menu .navbar-brand .navbar-caption-wrap {
+  display: -webkit-flex;
+}
+.menu .navbar-brand .navbar-logo img {
+  display: -webkit-flex;
+  width: auto;
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .menu .navbar-toggleable-sm .navbar-nav {
+    display: -ms-flexbox;
+  }
+}
+@media (max-width: 991px) {
+  .menu .navbar-collapse {
+    max-height: 93.5vh;
+  }
+  .menu .navbar-collapse.show {
+    overflow: auto;
+  }
+}
+@media (min-width: 992px) {
+  .menu .navbar-nav.nav-dropdown {
+    display: -webkit-flex;
+  }
+  .menu .navbar-toggleable-sm .navbar-collapse {
+    display: -webkit-flex !important;
+  }
+  .menu .collapsed .navbar-collapse {
+    max-height: 93.5vh;
+  }
+  .menu .collapsed .navbar-collapse.show {
+    overflow: auto;
+  }
+}
+@media (max-width: 767px) {
+  .menu .navbar-collapse {
+    max-height: 80vh;
+  }
+}
+
+.nav-link .mbr-iconfont {
+  margin-right: 0.5rem;
+}
+
+.navbar {
+  display: -webkit-flex;
+  -webkit-flex-wrap: wrap;
+  -webkit-align-items: center;
+  -webkit-justify-content: space-between;
+}
+
+.navbar-collapse {
+  -webkit-flex-basis: 100%;
+  -webkit-flex-grow: 1;
+  -webkit-align-items: center;
+}
+
+.nav-dropdown .link {
+  padding: 0.667em 1.667em !important;
+  margin: 0 !important;
+}
+
+.nav {
+  display: -webkit-flex;
+  -webkit-flex-wrap: wrap;
+}
+
+.row {
+  display: -webkit-flex;
+  -webkit-flex-wrap: wrap;
+}
+
+.justify-content-center {
+  -webkit-justify-content: center;
+}
+
+.form-inline {
+  display: -webkit-flex;
+}
+
+.card-wrapper {
+  -webkit-flex: 1;
+}
+
+.carousel-control {
+  z-index: 10;
+  display: -webkit-flex;
+}
+
+.carousel-controls {
+  display: -webkit-flex;
+}
+
+.media {
+  display: -webkit-flex;
+}
+
+.form-group:focus {
+  outline: none;
+}
+
+.jq-selectbox__select {
+  padding: 7px 0;
+  position: relative;
+}
+
+.jq-selectbox__dropdown {
+  overflow: hidden;
+  border-radius: 10px;
+  position: absolute;
+  top: 100%;
+  left: 0 !important;
+  width: 100% !important;
+}
+
+.jq-selectbox__trigger-arrow {
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.jq-selectbox li {
+  padding: 1.07em 0.5em;
+}
+
+input[type=range] {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.modal-dialog,
+.modal-content {
+  height: 100%;
+}
+
+.modal-dialog .carousel-inner {
+  height: calc(100vh - 1.75rem);
+}
+@media (max-width: 575px) {
+  .modal-dialog .carousel-inner {
+    height: calc(100vh - 1rem);
+  }
+}
+
+.carousel-item {
+  text-align: center;
+}
+
+.carousel-item img {
+  margin: auto;
+}
+
+.navbar-toggler {
+  align-self: flex-start;
+  padding: 0.25rem 0.75rem;
+  font-size: 1.25rem;
+  line-height: 1;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+
+.navbar-toggler:focus,
+.navbar-toggler:hover {
+  text-decoration: none;
+  box-shadow: none;
+}
+
+.navbar-toggler-icon {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: middle;
+  content: "";
+  background: no-repeat center center;
+  background-size: 100% 100%;
+}
+
+.navbar-toggler-left {
+  position: absolute;
+  left: 1rem;
+}
+
+.navbar-toggler-right {
+  position: absolute;
+  right: 1rem;
+}
+
+.card-img {
+  width: auto;
+}
+
+.menu .navbar.collapsed:not(.beta-menu) {
+  flex-direction: column;
+}
+
+.carousel-item.active,
+.carousel-item-next,
+.carousel-item-prev {
+  display: flex;
+}
+
+.note-air-layout .dropup .dropdown-menu,
+.note-air-layout .navbar-fixed-bottom .dropdown .dropdown-menu {
+  bottom: initial !important;
+}
+
+html,
+body {
+  height: auto;
+  min-height: 100vh;
+}
+
+.dropup .dropdown-toggle::after {
+  display: none;
+}
+
+.form-asterisk {
+  font-family: initial;
+  position: absolute;
+  top: -2px;
+  font-weight: normal;
+}
+
+.form-control-label {
+  position: relative;
+  cursor: pointer;
+  margin-bottom: 0.357em;
+  padding: 0;
+}
+
+.alert {
+  color: #ffffff;
+  border-radius: 0;
+  border: 0;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  margin-bottom: 1.875rem;
+  padding: 1.25rem;
+  position: relative;
+  text-align: center;
+}
+.alert.alert-form::after {
+  background-color: inherit;
+  bottom: -7px;
+  content: "";
+  display: block;
+  height: 14px;
+  left: 50%;
+  margin-left: -7px;
+  position: absolute;
+  transform: rotate(45deg);
+  width: 14px;
+}
+
+.form-control {
+  background-color: #ffffff;
+  background-clip: border-box;
+  color: #232323;
+  line-height: 1rem !important;
+  height: auto;
+  padding: 0.6rem 1.2rem;
+  transition: border-color 0.25s ease 0s;
+  border: 1px solid transparent !important;
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px 0px, rgba(0, 0, 0, 0.07) 0px 1px 3px 0px, rgba(0, 0, 0, 0.03) 0px 0px 0px 1px;
+}
+.form-active .form-control:invalid {
+  border-color: red;
+}
+
+form .row {
+  margin-left: -0.6rem;
+  margin-right: -0.6rem;
+}
+form .row [class*=col] {
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+}
+
+form .mbr-section-btn {
+  margin: 0;
+  padding-left: 0.6rem;
+  padding-right: 0.6rem;
+}
+
+form .btn {
+  display: flex;
+  padding: 0.6rem 1.2rem;
+  margin: 0;
+}
+
+form .form-check-input {
+  margin-top: 0.5;
+}
+
+textarea.form-control {
+  line-height: 1.5rem !important;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-control,
+form .btn {
+  min-height: 48px;
+}
+
+.gdpr-block label span.textGDPR input[name=gdpr] {
+  top: 7px;
+}
+
+.form-control:focus {
+  box-shadow: none;
+}
+
+:focus {
+  outline: none;
+}
+
+.mbr-overlay {
+  background-color: #000;
+  bottom: 0;
+  left: 0;
+  opacity: 0.5;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+blockquote {
+  font-style: italic;
+  padding: 3rem;
+  font-size: 1.09rem;
+  position: relative;
+  border-left: 3px solid;
+}
+
+ul,
+ol,
+pre,
+blockquote {
+  margin-bottom: 2.3125rem;
+}
+
+.mt-4 {
+  margin-top: 2rem !important;
+}
+
+.mb-4 {
+  margin-bottom: 2rem !important;
+}
+
+@media (min-width: 992px) {
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .row {
+    margin-left: -16px;
+    margin-right: -16px;
+  }
+  .row > [class*=col] {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+@media (min-width: 768px) {
+  .container-fluid {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .mbr-container {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+}
+@media (max-width: 767px) {
+  .mbr-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+.card-wrapper,
+.item-wrapper {
+  overflow: hidden;
+}
+
+.app-video-wrapper > img {
+  opacity: 1;
+}
+
+.item {
+  position: relative;
+}
+
+.dropdown-menu .dropdown-menu {
+  left: 100%;
+}
+
+.dropdown-item + .dropdown-menu {
+  display: none;
+}
+
+.dropdown-item:hover + .dropdown-menu,
+.dropdown-menu:hover {
+  display: block;
+}
+
+@media (min-aspect-ratio: 16/9) {
+  .mbr-video-foreground {
+    height: 300% !important;
+    top: -100% !important;
+  }
+}
+@media (max-aspect-ratio: 16/9) {
+  .mbr-video-foreground {
+    width: 300% !important;
+    left: -100% !important;
+  }
+}.engine {
+	position: absolute;
+	text-indent: -2400px;
+	text-align: center;
+	padding: 0;
+	top: 0;
+	left: -2400px;
+}
+</style>
+  <!-- End theme css   -->
+
+
+
+
+  <!-- Start mbr add'l css -->
+  <style>
+  body {
+  font-family: Jost;
+}
+.display-1 {
+  font-family: 'Jost', sans-serif;
+  font-size: 4.6rem;
+  line-height: 1.1;
+}
+.display-1 > .mbr-iconfont {
+  font-size: 5.75rem;
+}
+.display-2 {
+  font-family: 'Jost', sans-serif;
+  font-size: 3rem;
+  line-height: 1.1;
+}
+.display-2 > .mbr-iconfont {
+  font-size: 3.75rem;
+}
+.display-4 {
+  font-family: 'Jost', sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.5;
+}
+.display-4 > .mbr-iconfont {
+  font-size: 1.375rem;
+}
+.display-5 {
+  font-family: 'Jost', sans-serif;
+  font-size: 2.2rem;
+  line-height: 1.5;
+}
+.display-5 > .mbr-iconfont {
+  font-size: 2.75rem;
+}
+.display-7 {
+  font-family: 'Jost', sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+.display-7 > .mbr-iconfont {
+  font-size: 1.5rem;
+}
+.display-8 {
+  font-family: 'Jost', sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+.display-8 > .mbr-iconfont {
+  font-size: 1.3rem;
+}
+.display-9 {
+  font-family: 'Jost', sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+.display-9 > .mbr-iconfont {
+  font-size: 1.1rem;
+}
+
+
+/* ---- Fluid typography for mobile devices ---- */
+/* 1.4 - font scale ratio ( bootstrap == 1.42857 ) */
+/* 100vw - current viewport width */
+/* (48 - 20)  48 == 48rem == 768px, 20 == 20rem == 320px(minimal supported viewport) */
+/* 0.65 - min scale variable, may vary */
+@media (max-width: 992px) {
+  .display-1 {
+    font-size: 3.68rem;
+  }
+}
+@media (max-width: 768px) {
+  .display-1 {
+    font-size: 3.22rem;
+    font-size: calc( 2.26rem + (4.6 - 2.26) * ((100vw - 20rem) / (48 - 20)));
+    line-height: calc( 1.1 * (2.26rem + (4.6 - 2.26) * ((100vw - 20rem) / (48 - 20))));
+  }
+  .display-2 {
+    font-size: 2.4rem;
+    font-size: calc( 1.7rem + (3 - 1.7) * ((100vw - 20rem) / (48 - 20)));
+    line-height: calc( 1.3 * (1.7rem + (3 - 1.7) * ((100vw - 20rem) / (48 - 20))));
+  }
+  .display-4 {
+    font-size: 0.88rem;
+    font-size: calc( 1.0350000000000001rem + (1.1 - 1.0350000000000001) * ((100vw - 20rem) / (48 - 20)));
+    line-height: calc( 1.4 * (1.0350000000000001rem + (1.1 - 1.0350000000000001) * ((100vw - 20rem) / (48 - 20))));
+  }
+  .display-5 {
+    font-size: 1.76rem;
+    font-size: calc( 1.42rem + (2.2 - 1.42) * ((100vw - 20rem) / (48 - 20)));
+    line-height: calc( 1.4 * (1.42rem + (2.2 - 1.42) * ((100vw - 20rem) / (48 - 20))));
+  }
+  .display-7 {
+    font-size: 0.96rem;
+    font-size: calc( 1.07rem + (1.2 - 1.07) * ((100vw - 20rem) / (48 - 20)));
+    line-height: calc( 1.4 * (1.07rem + (1.2 - 1.07) * ((100vw - 20rem) / (48 - 20))));
+  }
+}
+/* Buttons */
+.btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+}
+.btn-sm {
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+}
+.btn-md {
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+}
+.btn-lg {
+  padding: 1rem 2.6rem;
+  border-radius: 4px;
+}
+.bg-primary {
+  background-color: #6592e6 !important;
+}
+.bg-success {
+  background-color: #40b0bf !important;
+}
+.bg-info {
+  background-color: #47b5ed !important;
+}
+.bg-warning {
+  background-color: #ffe161 !important;
+}
+.bg-danger {
+  background-color: #ff9966 !important;
+}
+.btn-primary,
+.btn-primary:active {
+  background-color: #6592e6 !important;
+  border-color: #6592e6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary.focus,
+.btn-primary.active {
+  color: #ffffff !important;
+  background-color: #2260d2 !important;
+  border-color: #2260d2 !important;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-primary.disabled,
+.btn-primary:disabled {
+  color: #ffffff !important;
+  background-color: #2260d2 !important;
+  border-color: #2260d2 !important;
+}
+.btn-secondary,
+.btn-secondary:active {
+  background-color: #ff6666 !important;
+  border-color: #ff6666 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary.focus,
+.btn-secondary.active {
+  color: #ffffff !important;
+  background-color: #ff0f0f !important;
+  border-color: #ff0f0f !important;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-secondary.disabled,
+.btn-secondary:disabled {
+  color: #ffffff !important;
+  background-color: #ff0f0f !important;
+  border-color: #ff0f0f !important;
+}
+.btn-info,
+.btn-info:active {
+  background-color: #47b5ed !important;
+  border-color: #47b5ed !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-info:hover,
+.btn-info:focus,
+.btn-info.focus,
+.btn-info.active {
+  color: #ffffff !important;
+  background-color: #148cca !important;
+  border-color: #148cca !important;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-info.disabled,
+.btn-info:disabled {
+  color: #ffffff !important;
+  background-color: #148cca !important;
+  border-color: #148cca !important;
+}
+.btn-success,
+.btn-success:active {
+  background-color: #40b0bf !important;
+  border-color: #40b0bf !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-success:hover,
+.btn-success:focus,
+.btn-success.focus,
+.btn-success.active {
+  color: #ffffff !important;
+  background-color: #2a747e !important;
+  border-color: #2a747e !important;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-success.disabled,
+.btn-success:disabled {
+  color: #ffffff !important;
+  background-color: #2a747e !important;
+  border-color: #2a747e !important;
+}
+.btn-warning,
+.btn-warning:active {
+  background-color: #ffe161 !important;
+  border-color: #ffe161 !important;
+  color: #614f00 !important;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-warning:hover,
+.btn-warning:focus,
+.btn-warning.focus,
+.btn-warning.active {
+  color: #0a0800 !important;
+  background-color: #ffd10a !important;
+  border-color: #ffd10a !important;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-warning.disabled,
+.btn-warning:disabled {
+  color: #614f00 !important;
+  background-color: #ffd10a !important;
+  border-color: #ffd10a !important;
+}
+.btn-danger,
+.btn-danger:active {
+  background-color: #ff9966 !important;
+  border-color: #ff9966 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-danger:hover,
+.btn-danger:focus,
+.btn-danger.focus,
+.btn-danger.active {
+  color: #ffffff !important;
+  background-color: #ff5f0f !important;
+  border-color: #ff5f0f !important;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-danger.disabled,
+.btn-danger:disabled {
+  color: #ffffff !important;
+  background-color: #ff5f0f !important;
+  border-color: #ff5f0f !important;
+}
+.btn-white,
+.btn-white:active {
+  background-color: #fafafa !important;
+  border-color: #fafafa !important;
+  color: #7a7a7a !important;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-white:hover,
+.btn-white:focus,
+.btn-white.focus,
+.btn-white.active {
+  color: #4f4f4f !important;
+  background-color: #cfcfcf !important;
+  border-color: #cfcfcf !important;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-white.disabled,
+.btn-white:disabled {
+  color: #7a7a7a !important;
+  background-color: #cfcfcf !important;
+  border-color: #cfcfcf !important;
+}
+.btn-black,
+.btn-black:active {
+  background-color: #232323 !important;
+  border-color: #232323 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-black:hover,
+.btn-black:focus,
+.btn-black.focus,
+.btn-black.active {
+  color: #ffffff !important;
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+}
+.btn-black.disabled,
+.btn-black:disabled {
+  color: #ffffff !important;
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+}
+.btn-primary-outline,
+.btn-primary-outline:active {
+  background-color: transparent !important;
+  border-color: transparent;
+  color: #6592e6;
+}
+.btn-primary-outline:hover,
+.btn-primary-outline:focus,
+.btn-primary-outline.focus,
+.btn-primary-outline.active {
+  color: #2260d2 !important;
+  background-color: transparent!important;
+  border-color: transparent!important;
+  box-shadow: none!important;
+}
+.btn-primary-outline.disabled,
+.btn-primary-outline:disabled {
+  color: #ffffff !important;
+  background-color: #6592e6 !important;
+  border-color: #6592e6 !important;
+}
+.btn-secondary-outline,
+.btn-secondary-outline:active {
+  background-color: transparent !important;
+  border-color: transparent;
+  color: #ff6666;
+}
+.btn-secondary-outline:hover,
+.btn-secondary-outline:focus,
+.btn-secondary-outline.focus,
+.btn-secondary-outline.active {
+  color: #ff0f0f !important;
+  background-color: transparent!important;
+  border-color: transparent!important;
+  box-shadow: none!important;
+}
+.btn-secondary-outline.disabled,
+.btn-secondary-outline:disabled {
+  color: #ffffff !important;
+  background-color: #ff6666 !important;
+  border-color: #ff6666 !important;
+}
+.btn-info-outline,
+.btn-info-outline:active {
+  background-color: transparent !important;
+  border-color: transparent;
+  color: #47b5ed;
+}
+.btn-info-outline:hover,
+.btn-info-outline:focus,
+.btn-info-outline.focus,
+.btn-info-outline.active {
+  color: #148cca !important;
+  background-color: transparent!important;
+  border-color: transparent!important;
+  box-shadow: none!important;
+}
+.btn-info-outline.disabled,
+.btn-info-outline:disabled {
+  color: #ffffff !important;
+  background-color: #47b5ed !important;
+  border-color: #47b5ed !important;
+}
+.btn-success-outline,
+.btn-success-outline:active {
+  background-color: transparent !important;
+  border-color: transparent;
+  color: #40b0bf;
+}
+.btn-success-outline:hover,
+.btn-success-outline:focus,
+.btn-success-outline.focus,
+.btn-success-outline.active {
+  color: #2a747e !important;
+  background-color: transparent!important;
+  border-color: transparent!important;
+  box-shadow: none!important;
+}
+.btn-success-outline.disabled,
+.btn-success-outline:disabled {
+  color: #ffffff !important;
+  background-color: #40b0bf !important;
+  border-color: #40b0bf !important;
+}
+.btn-warning-outline,
+.btn-warning-outline:active {
+  background-color: transparent !important;
+  border-color: transparent;
+  color: #ffe161;
+}
+.btn-warning-outline:hover,
+.btn-warning-outline:focus,
+.btn-warning-outline.focus,
+.btn-warning-outline.active {
+  color: #ffd10a !important;
+  background-color: transparent!important;
+  border-color: transparent!important;
+  box-shadow: none!important;
+}
+.btn-warning-outline.disabled,
+.btn-warning-outline:disabled {
+  color: #614f00 !important;
+  background-color: #ffe161 !important;
+  border-color: #ffe161 !important;
+}
+.btn-danger-outline,
+.btn-danger-outline:active {
+  background-color: transparent !important;
+  border-color: transparent;
+  color: #ff9966;
+}
+.btn-danger-outline:hover,
+.btn-danger-outline:focus,
+.btn-danger-outline.focus,
+.btn-danger-outline.active {
+  color: #ff5f0f !important;
+  background-color: transparent!important;
+  border-color: transparent!important;
+  box-shadow: none!important;
+}
+.btn-danger-outline.disabled,
+.btn-danger-outline:disabled {
+  color: #ffffff !important;
+  background-color: #ff9966 !important;
+  border-color: #ff9966 !important;
+}
+.btn-black-outline,
+.btn-black-outline:active {
+  background-color: transparent !important;
+  border-color: transparent;
+  color: #232323;
+}
+.btn-black-outline:hover,
+.btn-black-outline:focus,
+.btn-black-outline.focus,
+.btn-black-outline.active {
+  color: #000000 !important;
+  background-color: transparent!important;
+  border-color: transparent!important;
+  box-shadow: none!important;
+}
+.btn-black-outline.disabled,
+.btn-black-outline:disabled {
+  color: #ffffff !important;
+  background-color: #232323 !important;
+  border-color: #232323 !important;
+}
+.btn-white-outline,
+.btn-white-outline:active {
+  background-color: transparent !important;
+  border-color: transparent;
+  color: #fafafa;
+}
+.btn-white-outline:hover,
+.btn-white-outline:focus,
+.btn-white-outline.focus,
+.btn-white-outline.active {
+  color: #cfcfcf !important;
+  background-color: transparent!important;
+  border-color: transparent!important;
+  box-shadow: none!important;
+}
+.btn-white-outline.disabled,
+.btn-white-outline:disabled {
+  color: #7a7a7a !important;
+  background-color: #fafafa !important;
+  border-color: #fafafa !important;
+}
+.text-primary {
+  color: #6592e6 !important;
+}
+.text-secondary {
+  color: #ff6666 !important;
+}
+.text-success {
+  color: #40b0bf !important;
+}
+.text-info {
+  color: #47b5ed !important;
+}
+.text-warning {
+  color: #ffe161 !important;
+}
+.text-danger {
+  color: #ff9966 !important;
+}
+.text-white {
+  color: #fafafa !important;
+}
+.text-black {
+  color: #232323 !important;
+}
+a.text-primary:hover,
+a.text-primary:focus,
+a.text-primary.active {
+  color: #205ac5 !important;
+}
+a.text-secondary:hover,
+a.text-secondary:focus,
+a.text-secondary.active {
+  color: #ff0000 !important;
+}
+a.text-success:hover,
+a.text-success:focus,
+a.text-success.active {
+  color: #266a73 !important;
+}
+a.text-info:hover,
+a.text-info:focus,
+a.text-info.active {
+  color: #1283bc !important;
+}
+a.text-warning:hover,
+a.text-warning:focus,
+a.text-warning.active {
+  color: #facb00 !important;
+}
+a.text-danger:hover,
+a.text-danger:focus,
+a.text-danger.active {
+  color: #ff5500 !important;
+}
+a.text-white:hover,
+a.text-white:focus,
+a.text-white.active {
+  color: #c7c7c7 !important;
+}
+a.text-black:hover,
+a.text-black:focus,
+a.text-black.active {
+  color: #000000 !important;
+}
+a[class*="text-"]:not(.nav-link):not(.dropdown-item):not([role]):not(.navbar-caption) {
+  position: relative;
+  background-image: transparent;
+  background-size: 10000px 2px;
+  background-repeat: no-repeat;
+  background-position: 0px 1.2em;
+  background-position: -10000px 1.2em;
+}
+a[class*="text-"]:not(.nav-link):not(.dropdown-item):not([role]):not(.navbar-caption):hover {
+  transition: background-position 2s ease-in-out;
+  background-image: linear-gradient(currentColor 50%, currentColor 50%);
+  background-position: 0px 1.2em;
+}
+.nav-tabs .nav-link.active {
+  color: #6592e6;
+}
+.nav-tabs .nav-link:not(.active) {
+  color: #232323;
+}
+.alert-success {
+  background-color: #70c770;
+}
+.alert-info {
+  background-color: #47b5ed;
+}
+.alert-warning {
+  background-color: #ffe161;
+}
+.alert-danger {
+  background-color: #ff9966;
+}
+.mbr-gallery-filter li.active .btn {
+  background-color: #6592e6;
+  border-color: #6592e6;
+  color: #ffffff;
+}
+.mbr-gallery-filter li.active .btn:focus {
+  box-shadow: none;
+}
+a,
+a:hover {
+  color: #6592e6;
+}
+.mbr-plan-header.bg-primary .mbr-plan-subtitle,
+.mbr-plan-header.bg-primary .mbr-plan-price-desc {
+  color: #ffffff;
+}
+.mbr-plan-header.bg-success .mbr-plan-subtitle,
+.mbr-plan-header.bg-success .mbr-plan-price-desc {
+  color: #a0d8df;
+}
+.mbr-plan-header.bg-info .mbr-plan-subtitle,
+.mbr-plan-header.bg-info .mbr-plan-price-desc {
+  color: #ffffff;
+}
+.mbr-plan-header.bg-warning .mbr-plan-subtitle,
+.mbr-plan-header.bg-warning .mbr-plan-price-desc {
+  color: #ffffff;
+}
+.mbr-plan-header.bg-danger .mbr-plan-subtitle,
+.mbr-plan-header.bg-danger .mbr-plan-price-desc {
+  color: #ffffff;
+}
+/* Scroll to top button*/
+.scrollToTop_wraper {
+  display: none;
+}
+.form-control {
+  font-family: 'Jost', sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.form-control > .mbr-iconfont {
+  font-size: 1.375rem;
+}
+.form-control:hover,
+.form-control:focus {
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px 0px, rgba(0, 0, 0, 0.07) 0px 1px 3px 0px, rgba(0, 0, 0, 0.03) 0px 0px 0px 1px;
+  border-color: #6592e6 !important;
+}
+.form-control:-webkit-input-placeholder {
+  font-family: 'Jost', sans-serif;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+.form-control:-webkit-input-placeholder > .mbr-iconfont {
+  font-size: 1.375rem;
+}
+blockquote {
+  border-color: #6592e6;
+}
+/* Forms */
+.jq-selectbox li:hover,
+.jq-selectbox li.selected {
+  background-color: #6592e6;
+  color: #ffffff;
+}
+.jq-number__spin {
+  transition: 0.25s ease;
+}
+.jq-number__spin:hover {
+  border-color: #6592e6;
+}
+.jq-selectbox .jq-selectbox__trigger-arrow,
+.jq-number__spin.minus:after,
+.jq-number__spin.plus:after {
+  transition: 0.4s;
+  border-top-color: #353535;
+  border-bottom-color: #353535;
+}
+.jq-selectbox:hover .jq-selectbox__trigger-arrow,
+.jq-number__spin.minus:hover:after,
+.jq-number__spin.plus:hover:after {
+  border-top-color: #6592e6;
+  border-bottom-color: #6592e6;
+}
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_default,
+.xdsoft_datetimepicker .xdsoft_calendar td.xdsoft_current,
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box > div > div.xdsoft_current {
+  color: #ffffff !important;
+  background-color: #6592e6 !important;
+  box-shadow: none !important;
+}
+.xdsoft_datetimepicker .xdsoft_calendar td:hover,
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box > div > div:hover {
+  color: #000000 !important;
+  background: #ff6666 !important;
+  box-shadow: none !important;
+}
+.lazy-bg {
+  background-image: none !important;
+}
+.lazy-placeholder:not(section),
+.lazy-none {
+  display: block;
+  position: relative;
+  padding-bottom: 56.25%;
+  width: 100%;
+  height: auto;
+}
+iframe.lazy-placeholder,
+.lazy-placeholder:after {
+  content: '';
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  background: transparent no-repeat center;
+  background-size: contain;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg width='32' height='32' viewBox='0 0 64 64' xmlns='http://www.w3.org/2000/svg' stroke='%236592e6' %3e%3cg fill='none' fill-rule='evenodd'%3e%3cg transform='translate(16 16)' stroke-width='2'%3e%3ccircle stroke-opacity='.5' cx='16' cy='16' r='16'/%3e%3cpath d='M32 16c0-9.94-8.06-16-16-16'%3e%3canimateTransform attributeName='transform' type='rotate' from='0 16 16' to='360 16 16' dur='1s' repeatCount='indefinite'/%3e%3c/path%3e%3c/g%3e%3c/g%3e%3c/svg%3e");
+}
+section.lazy-placeholder:after {
+  opacity: 0.5;
+}
+body {
+  overflow-x: hidden;
+}
+a {
+  transition: color 0.6s;
+}
+.cid-tgoDqQrnKP {
+  padding-top: 5rem;
+  padding-bottom: 1rem;
+  background-color: #ffffff;
+}
+.cid-tgoDqQrnKP .mbr-fallback-image.disabled {
+  display: none;
+}
+.cid-tgoDqQrnKP .mbr-fallback-image {
+  display: block;
+  background-size: cover;
+  background-position: center center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+}
+.cid-tgoDqQrnKP .card-wrapper {
+  background: #0b1c3b;
+  border-radius: 4px;
+}
+@media (max-width: 767px) {
+  .cid-tgoDqQrnKP .card-wrapper {
+    padding: .5rem;
+  }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .cid-tgoDqQrnKP .card-wrapper {
+    padding: 1rem;
+  }
+}
+@media (min-width: 992px) {
+  .cid-tgoDqQrnKP .card-wrapper {
+    padding: 2rem;
+  }
+}
+.cid-tgoDqQrnKP .mbr-text,
+.cid-tgoDqQrnKP .mbr-section-btn {
+  color: #ffffff;
+}
+.cid-tgoDqQrnKP .card-title,
+.cid-tgoDqQrnKP .card-box {
+  text-align: center;
+  color: #e3f8eb;
+  height: .1rem;
+
+}
+.cid-s48vaXqeL6 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  background-color: #ffffff;
+}
+.cid-s48vaXqeL6 .mbr-section-title {
+  text-align: left;
+}
+.cid-s48vaXqeL6 .mbr-section-subtitle {
+  text-align: left;
+}
+.cid-s48vnjULo4 {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  background-color: #ffffff;
+}
+.cid-s48vnjULo4 .mbr-section-title {
+  text-align: left;
+}
+.cid-s48vnjULo4 .mbr-section-subtitle {
+  text-align: left;
+}
+.cid-s48OLK6784 {
+  z-index: 1000;
+  width: 100%;
+  position: relative;
+  min-height: 60px;
+}
+.cid-s48OLK6784 nav.navbar {
+  position: fixed;
+}
+.cid-s48OLK6784 .dropdown-item:before {
+  font-family: Moririse2 !important;
+  content: '\e966';
+  display: inline-block;
+  width: 0;
+  position: absolute;
+  left: 1rem;
+  top: 0.5rem;
+  margin-right: 0.5rem;
+  line-height: 1;
+  font-size: inherit;
+  vertical-align: middle;
+  text-align: center;
+  overflow: hidden;
+  transform: scale(0, 1);
+  transition: all 0.25s ease-in-out;
+}
+.cid-s48OLK6784 .dropdown-menu {
+  padding: 0;
+}
+.cid-s48OLK6784 .dropdown-item {
+  border-bottom: 1px solid #e6e6e6;
+}
+.cid-s48OLK6784 .dropdown-item:hover,
+.cid-s48OLK6784 .dropdown-item:focus {
+  background: #6592e6 !important;
+  color: white !important;
+}
+.cid-s48OLK6784 .nav-dropdown .link {
+  padding: 0 0.3em !important;
+  margin: .667em 1em !important;
+}
+.cid-s48OLK6784 .nav-dropdown .link.dropdown-toggle::after {
+  margin-left: 0.5rem;
+  margin-top: 0.2rem;
+}
+.cid-s48OLK6784 .nav-link {
+  position: relative;
+}
+.cid-s48OLK6784 .container {
+  display: flex;
+  margin: auto;
+}
+.cid-s48OLK6784 .iconfont-wrapper {
+  color: #000000 !important;
+  font-size: 1.5rem;
+  padding-right: .5rem;
+}
+.cid-s48OLK6784 .navbar-caption {
+  padding-right: 4rem;
+}
+.cid-s48OLK6784 .dropdown-menu,
+.cid-s48OLK6784 .navbar.opened {
+  background: #ffffff !important;
+}
+.cid-s48OLK6784 .nav-item:focus,
+.cid-s48OLK6784 .nav-link:focus {
+  outline: none;
+}
+.cid-s48OLK6784 .dropdown .dropdown-menu .dropdown-item {
+  width: auto;
+  transition: all 0.25s ease-in-out;
+}
+.cid-s48OLK6784 .dropdown .dropdown-menu .dropdown-item::after {
+  right: 0.5rem;
+}
+.cid-s48OLK6784 .dropdown .dropdown-menu .dropdown-item .mbr-iconfont {
+  margin-left: -1.8rem;
+  padding-right: 1rem;
+  font-size: inherit;
+}
+.cid-s48OLK6784 .dropdown .dropdown-menu .dropdown-item .mbr-iconfont:before {
+  display: inline-block;
+  transform: scale(1, 1);
+  transition: all 0.25s ease-in-out;
+}
+.cid-s48OLK6784 .collapsed .dropdown-menu .dropdown-item:before {
+  display: none;
+}
+.cid-s48OLK6784 .collapsed .dropdown .dropdown-menu .dropdown-item {
+  padding: 0.235em 1.5em 0.235em 1.5em !important;
+  transition: none;
+  margin: 0 !important;
+}
+.cid-s48OLK6784 .navbar {
+  min-height: 77px;
+  transition: all .3s;
+  border-bottom: 1px solid transparent;
+  background: #ffffff;
+}
+.cid-s48OLK6784 .navbar:not(.navbar-short) {
+  border-bottom: 1px solid #e6e6e6;
+}
+.cid-s48OLK6784 .navbar.opened {
+  transition: all .3s;
+}
+.cid-s48OLK6784 .navbar .dropdown-item {
+  padding: .5rem 1.8rem;
+}
+.cid-s48OLK6784 .navbar .navbar-logo img {
+  width: auto;
+}
+.cid-s48OLK6784 .navbar .navbar-collapse {
+  justify-content: flex-end;
+  z-index: 1;
+}
+.cid-s48OLK6784 .navbar.collapsed .nav-item .nav-link::before {
+  display: none;
+}
+.cid-s48OLK6784 .navbar.collapsed.opened .dropdown-menu {
+  top: 0;
+}
+@media (min-width: 992px) {
+  .cid-s48OLK6784 .navbar.collapsed.opened:not(.navbar-short) .navbar-collapse {
+    max-height: calc(98.5vh - 3.8rem);
+  }
+}
+.cid-s48OLK6784 .navbar.collapsed .dropdown-menu .dropdown-submenu {
+  left: 0 !important;
+}
+.cid-s48OLK6784 .navbar.collapsed .dropdown-menu .dropdown-item:after {
+  right: auto;
+}
+.cid-s48OLK6784 .navbar.collapsed .dropdown-menu .dropdown-toggle[data-toggle="dropdown-submenu"]:after {
+  margin-left: 0.5rem;
+  margin-top: 0.2rem;
+  border-top: 0.35em solid;
+  border-right: 0.35em solid transparent;
+  border-left: 0.35em solid transparent;
+  border-bottom: 0;
+  top: 55%;
+}
+.cid-s48OLK6784 .navbar.collapsed ul.navbar-nav li {
+  margin: auto;
+}
+.cid-s48OLK6784 .navbar.collapsed .dropdown-menu .dropdown-item {
+  padding: .25rem 1.5rem;
+  text-align: center;
+}
+.cid-s48OLK6784 .navbar.collapsed .icons-menu {
+  padding-left: 0;
+  padding-right: 0;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+}
+@media (max-width: 991px) {
+  .cid-s48OLK6784 .navbar .nav-item .nav-link::before {
+    display: none;
+  }
+  .cid-s48OLK6784 .navbar.opened .dropdown-menu {
+    top: 0;
+  }
+  .cid-s48OLK6784 .navbar .dropdown-menu .dropdown-submenu {
+    left: 0 !important;
+  }
+  .cid-s48OLK6784 .navbar .dropdown-menu .dropdown-item:after {
+    right: auto;
+  }
+  .cid-s48OLK6784 .navbar .dropdown-menu .dropdown-toggle[data-toggle="dropdown-submenu"]:after {
+    margin-left: 0.5rem;
+    margin-top: 0.2rem;
+    border-top: 0.35em solid;
+    border-right: 0.35em solid transparent;
+    border-left: 0.35em solid transparent;
+    border-bottom: 0;
+    top: 55%;
+  }
+  .cid-s48OLK6784 .navbar .navbar-logo img {
+    height: 3.8rem !important;
+  }
+  .cid-s48OLK6784 .navbar ul.navbar-nav li {
+    margin: auto;
+  }
+  .cid-s48OLK6784 .navbar .dropdown-menu .dropdown-item {
+    padding: .25rem 1.5rem !important;
+    text-align: center;
+  }
+  .cid-s48OLK6784 .navbar .navbar-brand {
+    flex-shrink: initial;
+    flex-basis: auto;
+    word-break: break-word;
+    padding-right: 2rem;
+  }
+  .cid-s48OLK6784 .navbar .navbar-toggler {
+    flex-basis: auto;
+  }
+  .cid-s48OLK6784 .navbar .icons-menu {
+    padding-left: 0;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+  }
+}
+.cid-s48OLK6784 .navbar.navbar-short {
+  min-height: 60px;
+}
+.cid-s48OLK6784 .navbar.navbar-short .navbar-logo img {
+  height: 3rem !important;
+}
+.cid-s48OLK6784 .navbar.navbar-short .navbar-brand {
+  padding: 0;
+}
+.cid-s48OLK6784 .navbar-brand {
+  flex-shrink: 0;
+  align-items: center;
+  margin-right: 0;
+  padding: 0;
+  transition: all .3s;
+  word-break: break-word;
+  z-index: 1;
+}
+.cid-s48OLK6784 .navbar-brand .navbar-caption {
+  line-height: inherit !important;
+}
+.cid-s48OLK6784 .navbar-brand .navbar-logo a {
+  outline: none;
+}
+.cid-s48OLK6784 .dropdown-item.active,
+.cid-s48OLK6784 .dropdown-item:active {
+  background-color: transparent;
+}
+.cid-s48OLK6784 .navbar-expand-lg .navbar-nav .nav-link {
+  padding: 0;
+}
+.cid-s48OLK6784 .nav-dropdown .link.dropdown-toggle {
+  margin-right: 1.667em;
+}
+.cid-s48OLK6784 .nav-dropdown .link.dropdown-toggle[aria-expanded="true"] {
+  margin-right: 0;
+  padding: 0.667em 1.667em;
+}
+.cid-s48OLK6784 .navbar.navbar-expand-lg .dropdown .dropdown-menu {
+  background: #ffffff;
+}
+.cid-s48OLK6784 .navbar.navbar-expand-lg .dropdown .dropdown-menu .dropdown-submenu {
+  margin: 0;
+  left: 100%;
+}
+.cid-s48OLK6784 .navbar .dropdown.open > .dropdown-menu {
+  display: block;
+}
+.cid-s48OLK6784 ul.navbar-nav {
+  flex-wrap: wrap;
+}
+.cid-s48OLK6784 .navbar-buttons {
+  text-align: center;
+  min-width: 170px;
+}
+.cid-s48OLK6784 button.navbar-toggler {
+  outline: none;
+  width: 31px;
+  height: 20px;
+  cursor: pointer;
+  transition: all .2s;
+  position: relative;
+  align-self: center;
+}
+.cid-s48OLK6784 button.navbar-toggler .hamburger span {
+  position: absolute;
+  right: 0;
+  width: 30px;
+  height: 2px;
+  border-right: 5px;
+  background-color: currentColor;
+}
+.cid-s48OLK6784 button.navbar-toggler .hamburger span:nth-child(1) {
+  top: 0;
+  transition: all .2s;
+}
+.cid-s48OLK6784 button.navbar-toggler .hamburger span:nth-child(2) {
+  top: 8px;
+  transition: all .15s;
+}
+.cid-s48OLK6784 button.navbar-toggler .hamburger span:nth-child(3) {
+  top: 8px;
+  transition: all .15s;
+}
+.cid-s48OLK6784 button.navbar-toggler .hamburger span:nth-child(4) {
+  top: 16px;
+  transition: all .2s;
+}
+.cid-s48OLK6784 nav.opened .hamburger span:nth-child(1) {
+  top: 8px;
+  width: 0;
+  opacity: 0;
+  right: 50%;
+  transition: all .2s;
+}
+.cid-s48OLK6784 nav.opened .hamburger span:nth-child(2) {
+  transform: rotate(45deg);
+  transition: all .25s;
+}
+.cid-s48OLK6784 nav.opened .hamburger span:nth-child(3) {
+  transform: rotate(-45deg);
+  transition: all .25s;
+}
+.cid-s48OLK6784 nav.opened .hamburger span:nth-child(4) {
+  top: 8px;
+  width: 0;
+  opacity: 0;
+  right: 50%;
+  transition: all .2s;
+}
+.cid-s48OLK6784 .navbar-dropdown {
+  padding: .5rem 1rem;
+  position: fixed;
+}
+.cid-s48OLK6784 a.nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cid-s48OLK6784 .icons-menu {
+  flex-wrap: nowrap;
+  display: flex;
+  justify-content: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.3rem;
+  text-align: center;
+}
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .cid-s48OLK6784 .navbar {
+    height: 77px;
+  }
+  .cid-s48OLK6784 .navbar.opened {
+    height: auto;
+  }
+  .cid-s48OLK6784 .nav-item .nav-link:hover::before {
+    width: 175%;
+    max-width: calc(100% + 2rem);
+    left: -1rem;
+  }
+}
+.cid-s48P1Icc8J {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  background-color: #232323;
+}
+.cid-s48P1Icc8J .row-links {
+  width: 100%;
+  justify-content: center;
+}
+.cid-s48P1Icc8J .social-row {
+  width: 100%;
+  justify-content: center;
+}
+.cid-s48P1Icc8J .media-container-row {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.cid-s48P1Icc8J .media-container-row .foot-menu {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 0;
+  margin-bottom: 0;
+}
+.cid-s48P1Icc8J .media-container-row .foot-menu li {
+  padding: 0 1rem 1rem 1rem;
+}
+.cid-s48P1Icc8J .media-container-row .foot-menu li p {
+  margin: 0;
+}
+.cid-s48P1Icc8J .media-container-row .social-list {
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.cid-s48P1Icc8J .media-container-row .social-list .mbr-iconfont-social {
+  font-size: 1.5rem;
+  color: #ffffff;
+}
+.cid-s48P1Icc8J .media-container-row .social-list .soc-item {
+  margin: 0 .5rem;
+}
+.cid-s48P1Icc8J .media-container-row .social-list a {
+  margin: 0;
+  opacity: .5;
+  transition: .2s linear;
+}
+.cid-s48P1Icc8J .media-container-row .social-list a:hover {
+  opacity: 1;
+}
+@media (max-width: 767px) {
+  .cid-s48P1Icc8J .media-container-row .social-list {
+    -webkit-justify-content: center;
+    justify-content: center;
+  }
+}
+.cid-s48P1Icc8J .media-container-row .row-copirayt {
+  word-break: break-word;
+  width: 100%;
+}
+.cid-s48P1Icc8J .media-container-row .row-copirayt p {
+  width: 100%;
+}
+
+  </style>
+    <!-- End mbr add'l css   -->
+
+
+</head>
+<body>
+
+  <section data-bs-version="5.1" class="menu cid-s48OLK6784" once="menu" id="menu1-h">
+
+    <nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
+        <div class="container">
+            <div class="navbar-brand">
+                <span class="navbar-logo">
+
+                </span>
+                <span class="navbar-caption-wrap"><a class="navbar-caption text-black display-7" href="https://rebellian.com">tech rebellian</a></span>
+            </div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbarSupportedContent" data-bs-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav nav-dropdown nav-right" data-app-modern-menu="true"><li class="nav-item"><a class="nav-link link text-black display-4" href="https://rebellian.com"><span class="mobi-mbri mobi-mbri-home mbr-iconfont mbr-iconfont-btn"></span></a></li>
+                    <li class="nav-item"><a class="nav-link link text-black display-4" href="https://rebellian.com/articles/articles.html">Articles</a></li></ul>
+
+
+            </div>
+        </div>
+    </nav>
+
+</section>
+
+<section data-bs-version="5.1" class="content15 cid-tgoDqQrnKP" id="content15-o">
+
+
+
+
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+            <div class="card col-md-12 col-lg-10">
+                <div class="card-wrapper">
+                    <div class="card-box align-left">
+                        <h4 class="card-title mbr-fonts-style mbr-white mb-3 display-5"><strong>Create an S3 WORM object storage server</strong></h4>
+                        <p class="mbr-text mbr-fonts-style display-7"><br><br>Using a Raspberry PI as a MinIO cloud storage server with immutable worm lock enabled</p>
+
+                    </div>
+                </div>
+            </div>
+            </div>
+    </div>
+</section>
+
+<section data-bs-version="5.1" class="content1 cid-s48vaXqeL6" id="content1-b">
+
+    <div class="container">
+     <div class="row justify-content-center">
+      <div class="title col-12 col-md-9">
+       <h4 class="mbr-section-subtitle align-center mbr-fonts-style mb-4 display-8">In this article, we'll create a home/test lab anti-ransomware solution for backup data storage using a:<br>
+        <ul>
+         <li>Raspberry Pi 4 Model B with two 512GB USB 3.0 flash disk drives</li>
+         <li>Immutable S3 write-once-read-many (WORM) enabled MinIO S3 bucket with erasure code</li>
+         <li>Virtual air gap service with schedule to disable/enable the network to allow inbound backups</li>
+        </ul>
+        <br>
+The WORM S3 bucket storage created by this project will be my 3rd backup target for my home data backups. If everything else gets hit with ransomware, in theory the immutable S3 bucket storage will remain unaffected.<br><br>
+
+<button type="button" class="collapsible">To read more, about MinIO 'object locking' click here</button>
+        <div class="collapso">
+          <p><ul>MinIO 'Object Locking' (also referred to as 'Object Retention') enforces Write-Once Read-Many (WORM) immutability to protect versioned objects from deletion. MinIO supports both duration based object retention and indefinite Legal Hold retention. This feature depends upon 'Erasure Coding' which is a (to quote MinIO's docos): "data redundancy and availability feature that allows MinIO deployments to automatically reconstruct objects on-the-fly despite the loss of multiple drives or nodes in the cluster. Erasure Coding provides object-level healing with significantly less overhead than adjacent technologies such as RAID or replication."
+            Intended design is a multi-node cluster where multiple drives connected to each node form a 'erasure set'. MinIO writes new object data along with parity blocks striped across the erasure set drives. In this configuration, a loss of one or more drives or even an entire node can be recovered.<br><br>
+            Object Locking key facts:
+         <li>MinIO Object Locking meets SEC17a-4(f), FINRA 4511(C), and CFTC 1.31(c)-(d) requirements as per Cohasset Associates.</li>
+         <li>MinIO's default bucket object WORM lock minimum retention period/protection for all versions is 30 days.</li>
+         <li>MinIO blocks any attempt to delete object versions held under WORM lock. The earliest possible time after which a client may delete the version is when the lock expires.</li>
+         <li>MinIO object locking is feature and API compatible with AWS S3. (For more info on AWS S3 object lock, see https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lock.html)</li>
+         <li>Object locking can only be enabled during bucket creation per S3 behavior. One cannot enable object locking on a an existing bucket that was created w/o locking enabled. And once created, one cannot disable Object Lock or suspend versioning for the bucket.</li>
+         <li>Retention rules can be configured at any time after object lock bucket creation.</li>
+         <li>Object locking requires versioning which is enabled by default upon object lock bucket creation.</li>
+        </ul>
+        <br>
+        <ul>S3 Object Lock can exist in two retention modes:
+         <li>Governance mode: users can't overwrite or delete an object version or alter its lock settings unless they have special permissions.</li>
+         <li>Compliance mode: a protected object version can't be overwritten or deleted by any user, including the root user. When an object is locked in compliance mode, its retention mode can't be changed, and its retention period can't be shortened. Compliance mode helps ensure that an object version can't be overwritten or deleted for the duration of the retention period.</li>
+        </ul>
+        One can also enable indefinite Legal Hold retention for an object using the MinIO Console or 'mc' CLI. The legal hold will supercede the WORM retention rules in place until a user w/sufficient permissions lifts the hold. I won't be covering this but you can read more about it here: https://min.io/docs/minio/kubernetes/upstream/administration/object-management/object-retention.html#enable-legal-hold-retention</p></div><br><br>
+
+        For the purposes of this lab exercise, we will be installing and configuring MinIO with Object Locking in Governance mode on a single Raspberry Pi 4 Model B using two USB thumb drives (SanDisk 512GB Ultra Fit USB 3.1 Flash Drive) partitioned into four volumes/filesystems.
+
+<ul><strong class="text-danger">Warning:</strong> a single MinIO node deployment with two USB thumb drives configured for S3 bucket object locking is NOT intended design for a production environment. There are so many points of failure with this non-enterprise-level configuration, such as:
+    <li>single node instead of a cluster. The more cluster nodes the better.</li>
+    <li>Storage based upon two USB 3.0 connected disks (thumb drives no less!).</li>
+    <li>single NIC on a single node</li>
+    <li>Self-signed CA certificate for HTTPS/SSL/TLS access and encryption, inherently less secure</li>
+</ul> 
+<br>
+
+
+With that warning out of the way, let's begin!<br><br><br>
+
+
+We'll assume the Raspberry PI 4 Model B has already had the Raspbian OS installed, hostname set.<br>
+In the lab example, I've already set the hostname via UI (yes I am that lazy) and then configured a static IP address as follows:<br>
+
+- set static IP:<br><br>
+
+<code style="font-weight: bold;">vi /etc/dhcpcd.conf</code><br><br>
+
+...appended following lines:<br><br>
+<code style="font-weight: bold; color: green">
+interface wlan0<br>
+static ip_address=192.168.1.125/24<br>
+static routers=192.168.1.99<br>
+static domain_name_servers=209.18.47.62</code><br><br>
+
+- save and reboot<br><br><br><br>
+
+
+
+<svg width=100% height="10" class="sectionbar">
+    <rect width=100% height="9" style="fill:rgb(214, 169, 45);stroke-width:3;">
+    Sorry, your browser does not support inline SVG.
+  </svg>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+
+  
+
+<h3>Configure filesystem storage</h3><br><br>
+
+<!-- Start Font Size Fix: -->
+<d style="font-size: 1.2rem">
+
+---- <strong>LVM:</strong> We're going to create 4 separate LVM (Logical Volume Manager) volume groups, volumes, filesystems. Overview:<br><br>
+    <ul>
+	 <li>Our server has two physical 512GB USB 3.0 thumb drives detected by the Raspbian OS as /dev/sda and /dev/sdb per 'fdisk', example:<br><br>
+    root@cloudy:~# <code style="font-weight: bold;">fdisk -l | egrep 'Disk \/|Disk model:'</code><br>
+    <p class="codeout">Disk /dev/ram0: 4 MiB, 4194304 bytes, 8192 sectors<br>
+    Disk /dev/ram1: 4 MiB, 4194304 bytes, 8192 sectors<br>
+    Disk /dev/ram2: 4 MiB, 4194304 bytes, 8192 sectors<br>
+    Disk /dev/ram3: 4 MiB, 4194304 bytes, 8192 sectors<br>
+    Disk /dev/ram4: 4 MiB, 4194304 bytes, 8192 sectors<br>
+    Disk /dev/ram5: 4 MiB, 4194304 bytes, 8192 sectors<br>
+    Disk /dev/ram6: 4 MiB, 4194304 bytes, 8192 sectors<br>
+    Disk /dev/ram7: 4 MiB, 4194304 bytes, 8192 sectors<br>
+    Disk /dev/ram8: 4 MiB, 4194304 bytes, 8192 sectors<br>
+    Disk /dev/ram9: 4 MiB, 4194304 bytes, 8192 sectors<br>
+    Disk /dev/ram10: 4 MiB, 4194304 bytes, 8192 sectors<br>
+    Disk /dev/ram11: 4 MiB, 4194304 bytes, 8192 sectors<br>
+    Disk /dev/ram12: 4 MiB, 4194304 bytes, 8192 sectors<br>
+    Disk /dev/ram13: 4 MiB, 4194304 bytes, 8192 sectors<br>
+    Disk /dev/ram14: 4 MiB, 4194304 bytes, 8192 sectors<br>
+    Disk /dev/ram15: 4 MiB, 4194304 bytes, 8192 sectors<br>
+    Disk /dev/mmcblk0: 119.08 GiB, 127865454592 bytes, 249737216 sectors<br>
+    <strong>Disk /dev/sda: 460.27 GiB, 494206451712 bytes, 965246976 sectors</strong><br>
+    <strong>Disk model:  SanDisk 3.2Gen1</strong><br>
+    <strong>Disk /dev/sdb: 460.27 GiB, 494206451712 bytes, 965246976 sectors</strong><br>
+    <strong>Disk model:  SanDisk 3.2Gen1</strong></p><br>
+    </li>
+     <li>We'll assign a GPT partition to both using 'parted'</li>
+     <li>We'll need to install LVM and XFS.</li>
+     <li>Then we'll create the 4 separate LVM volume groups, volumes, and format 4 XFS filesystems (XFS is the preferred filesystem by Minio).</li>
+    </ul>
+-- <strong>First create GPT partition label</strong> on each USB thumbdrive:<br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">parted /dev/sda</code>
+<p class="codeout">
+GNU Parted 3.4<br>
+Using /dev/sda<br>
+Welcome to GNU Parted! Type 'help' to view a list of commands.<br><br>
+(parted) mklabel gpt<br>
+Warning: The existing disk label on /dev/sda will be destroyed and all data on this disk will be lost. Do you want to continue?<br>
+Yes/No? yes<br>
+(parted) print<br>
+Model:  USB  SanDisk 3.2Gen1 (scsi)<br>
+Disk /dev/sda: 494GB<br>
+Sector size (logical/physical): 512B/512B<br>
+Partition Table: gpt<br>
+Disk Flags:<br>
+
+Number  Start  End  Size  File system  Name  Flags</p><br>
+
+...and then <strong>partition for a total of 4 XFS partitions</strong> (two per thumbdrive):<br><br>
+
+(parted) <code style="font-weight: bold;">mkpart primary xfs 1MB 235520MB</code><br><br>
+
+(parted) <code style="font-weight: bold;">mkpart extended xfs 235520MB 471040MB</code><br><br>
+
+...'p' (print) the current partitions for sda:<br><br>
+
+(parted) <code style="font-weight: bold;">p</code>
+<p class="codeout">
+Model:  USB  SanDisk 3.2Gen1 (scsi)
+Disk /dev/sda: 494GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start   End    Size   File system  Name      Flags
+ 1      1049kB  236GB  236GB  xfs          primary
+ 2      236GB   471GB  236GB  xfs          extended
+
+(parted) quit
+Information: You may need to update /etc/fstab.</p>
+
+….repeat same steps above for /dev/sdb<br><br><br>
+
+
+
+-- <strong>Install LVM:</strong> (LVM2 is not installed by default on Raspbian)<br><br>
+
+# <code style="font-weight: bold;">apt-get install lvm2</code><br><br><br>
+
+
+- <strong>Create 4 physical volumes</strong> based upon the gpt partitions we created with parted above:<br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">pvcreate /dev/sda1</code><br>
+  Physical volume "/dev/sda1" successfully created.<br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">pvcreate /dev/sda2</code><br>
+  Physical volume "/dev/sda2" successfully created.<br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">pvcreate /dev/sdb1</code><br>
+  Physical volume "/dev/sdb1" successfully created.<br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">pvcreate /dev/sdb2</code><br>
+  Physical volume "/dev/sdb2" successfully created.<br><br><br>
+
+
+	- <strong>Create 4 volume groups:</strong><br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">vgcreate xfsminio_vg1 /dev/sda1</code><br>
+  Volume group "xfsminio_vg1" successfully created<br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">vgcreate xfsminio_vg2 /dev/sda2</code><br>
+  Volume group "xfsminio_vg2" successfully created<br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">vgcreate xfsminio_vg3 /dev/sdb1</code><br>
+  Volume group "xfsminio_vg3" successfully created<br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">vgcreate xfsminio_vg4 /dev/sdb2</code><br>
+  Volume group "xfsminio_vg4" successfully created<br><br><br>
+
+
+	- <strong>Create 4 logical volumes:</strong><br><br>
+	
+root@cloudy:~# <code style="font-weight: bold;">lvcreate -L +219G -n xfsminio_1 xfsminio_vg1</code><br>
+  Logical volume "xfsminio_1" created.<br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">lvcreate -L +219G -n xfsminio_2 xfsminio_vg2</code><br>
+  Logical volume "xfsminio_2" created.<br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">lvcreate -L +219G -n xfsminio_3 xfsminio_vg3</code><br>
+  Logical volume "xfsminio_3" created.<br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">lvcreate -L +219G -n xfsminio_4 xfsminio_vg4</code><br>
+  Logical volume "xfsminio_4" created.<br><br><br>
+
+
+
+-- <strong>Install XFS:</strong> (XFS is not installed by default on Raspbian but XFS is the preferred filesystem by Minio)<br><br>
+
+# <code style="font-weight: bold;">apt-get install xfsprogs</code><br><br>
+
+….and confirm it is installed, the driver is running:<br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">modprobe -v xfs</code><br>
+insmod /lib/modules/5.15.61-v8+/kernel/fs/xfs/xfs.ko.xz<br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">grep xfs /proc/filesystems</code><br>
+        xfs<br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">lsmod | grep xfs</code><br>
+xfs                  1613824  0<br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">modinfo xfs</code>
+<p class="codeout">
+filename:       /lib/modules/5.15.61-v8+/kernel/fs/xfs/xfs.ko.xz<br>
+license:        GPL<br>
+description:    SGI XFS with ACLs, security attributes, realtime, quota, no debug enabled<br>
+author:         Silicon Graphics, Inc.<br>
+alias:          fs-xfs<br>
+srcversion:     7DF29575A772E2F414B4380<br>
+depends:<br>
+intree:         Y<br>
+name:           xfs<br>
+vermagic:       5.15.61-v8+ SMP preempt mod_unload modversions aarch64<br>
+root@cloudy:~#</p><br>
+
+
+
+	- <strong>Format four XFS filesystems:</strong><br>
+<code style="font-weight: bold;">	
+mkfs.xfs /dev/xfsminio_vg1/xfsminio_1<br><br>
+
+mkfs.xfs /dev/xfsminio_vg2/xfsminio_2<br><br>
+
+mkfs.xfs /dev/xfsminio_vg3/xfsminio_3<br><br>
+
+mkfs.xfs /dev/xfsminio_vg4/xfsminio_4
+</code><br><br><br>
+
+
+	- <strong>Create the mount directories and mount the 4 filesystems:</strong><br><br>
+	
+root@cloudy:~# <code style="font-weight: bold;">cd /</code><br>
+
+root@cloudy:/# <code style="font-weight: bold;">mkdir xfsminio_1 xfsminio_2 xfsminio_3 xfsminio_4</code><br><br>
+
+root@cloudy:/dev# <code style="font-weight: bold;">mount /dev/xfsminio_vg1/xfsminio_1 /xfsminio_1</code><br><br>
+
+root@cloudy:/dev# <code style="font-weight: bold;">mount /dev/xfsminio_vg2/xfsminio_2 /xfsminio_2</code><br><br>
+
+root@cloudy:/dev# <code style="font-weight: bold;">mount /dev/xfsminio_vg3/xfsminio_3 /xfsminio_3</code><br><br>
+
+root@cloudy:/dev# <code style="font-weight: bold;">mount /dev/xfsminio_vg4/xfsminio_4 /xfsminio_4</code><br><br><br>
+
+- Now we can see we have 4 219GB XFS formatted filesystems:<br>
+root@cloudy:/dev# <code style="font-weight: bold;">df -h</code><br>
+<p class="codeout">
+Filesystem                           Size  Used Avail Use% Mounted on<br>
+/dev/root                            117G  3.4G  109G   3% /<br>
+devtmpfs                             3.7G     0  3.7G   0% /dev<br>
+tmpfs                                3.9G     0  3.9G   0% /dev/shm<br>
+tmpfs                                1.6G  1.3M  1.6G   1% /run<br>
+tmpfs                                5.0M  4.0K  5.0M   1% /run/lock<br>
+/dev/mmcblk0p1                       255M   31M  225M  12% /boot<br>
+tmpfs                                782M   20K  782M   1% /run/user/1000<br>
+<strong>/dev/mapper/xfsminio_vg1-xfsminio_1  219G  1.6G  218G   1% /xfsminio_1<br>
+/dev/mapper/xfsminio_vg2-xfsminio_2  219G  1.6G  218G   1% /xfsminio_2<br>
+/dev/mapper/xfsminio_vg3-xfsminio_3  219G  1.6G  218G   1% /xfsminio_3<br>
+/dev/mapper/xfsminio_vg4-xfsminio_4  219G  1.6G  218G   1% /xfsminio_4</strong><br>
+</p>
+<br><br>
+
+We would like these filesystems to mount automatically at boot time. To do that we need to populate the /etc/fstab with mount information.<br>
+1) Run 'blkid' to see the UUIDs for the four new filesystems so we can add mount instructions to /etc/fstab to mount the filesystems automatically at boot time:<br><br>
+	
+root@cloudy:/dev# <code style="font-weight: bold;">blkid</code>
+<p class="codeout">
+/dev/mmcblk0p1: LABEL_FATBOOT="boot" LABEL="boot" UUID="29F5-65C4" BLOCK_SIZE="512" TYPE="vfat" PARTUUID="f5b253a5-01"<br>
+/dev/mmcblk0p2: LABEL="rootfs" UUID="cbe4d267-24de-4402-9a4b-1413a1da5eb8" BLOCK_SIZE="4096" TYPE="ext4" PARTUUID="f5b253a5-02"<br>
+/dev/sda1: UUID="kmLqPd-02U8-tGhA-FJz8-gqCo-WuEk-qG9zZm" TYPE="LVM2_member" PARTLABEL="primary" PARTUUID="5b2886f1-f0ef-47f8-9cb0-edd03402348e"<br>
+/dev/sda2: UUID="fI5Urx-Zrce-FWq0-Mf38-3Weg-OSPd-oOXeJP" TYPE="LVM2_member" PARTLABEL="extended" PARTUUID="ca789999-6ebd-4ce4-a45b-ed88185a2e5f"<br>
+/dev/sdb1: UUID="roesK1-xCyi-7aIV-PDmJ-K9ho-Un3M-FW8vs0" TYPE="LVM2_member" PARTLABEL="primary" PARTUUID="a7bff4b9-8e21-4796-80fe-8beaa2392247"<br>
+/dev/sdb2: UUID="Ksp7wC-RWyM-Dmn1-ApGf-C1a2-SF7P-29ngKP" TYPE="LVM2_member" PARTLABEL="extended" PARTUUID="a7f6eaef-2064-4775-8abf-fb7502559ff6"<br>
+<strong>/dev/mapper/xfsminio_vg1-xfsminio_1: UUID="5e5b405f-d8d7-4ca7-852e-41728f583a9b" BLOCK_SIZE="512" TYPE="xfs"<br>
+/dev/mapper/xfsminio_vg2-xfsminio_2: UUID="b90e8b54-a0f8-4d9b-b3bb-3cd7f545f338" BLOCK_SIZE="512" TYPE="xfs"<br>
+/dev/mapper/xfsminio_vg3-xfsminio_3: UUID="e1b47735-8601-4434-82c0-1fbff8c506fa" BLOCK_SIZE="512" TYPE="xfs"<br>
+/dev/mapper/xfsminio_vg4-xfsminio_4: UUID="669bc36b-6669-48d5-9f1c-9c07b4678962" BLOCK_SIZE="512" TYPE="xfs"</strong><br><br>
+</p>
+
+2) Populate the /etc/fstab file with the UUIDs, mountpoints, mount options so our new filesystems mount at boot time by appending:<br><br>
+
+root@cloudy:/dev# <code style="font-weight: bold;">echo 'UUID=5e5b405f-d8d7-4ca7-852e-41728f583a9b /xfsminio_1 xfs defaults 1 1' >> /etc/fstab</code><br><br>
+
+root@cloudy:/dev# <code style="font-weight: bold;">echo 'UUID=b90e8b54-a0f8-4d9b-b3bb-3cd7f545f338 /xfsminio_2 xfs defaults 1 1' >> /etc/fstab</code><br><br>
+
+root@cloudy:/dev# <code style="font-weight: bold;">echo 'UUID=e1b47735-8601-4434-82c0-1fbff8c506fa /xfsminio_3 xfs defaults 1 1' >> /etc/fstab</code><br><br>
+
+root@cloudy:/dev# <code style="font-weight: bold;">echo 'UUID=669bc36b-6669-48d5-9f1c-9c07b4678962 /xfsminio_4 xfs defaults 1 1' >> /etc/fstab</code><br><br>
+<br><br>
+
+
+
+<svg width=100% height="10" class="sectionbar">
+    <rect width=100% height="9" style="fill:rgb(214, 169, 45);stroke-width:3;">
+    Sorry, your browser does not support inline SVG.
+  </svg>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+
+
+  <h3>Install minio and the minio client 'mc'</h3><br><br>
+  <code style="font-weight: bold;">
+  cd /usr/bin<br><br>
+  
+  wget https://dl.minio.io/server/minio/release/linux-arm/minio<br><br>
+  
+  wget https://dl.minio.io/client/mc/release/linux-arm/mc<br><br>
+  
+  chmod 755 minio<br><br>
+  
+  chmod 755 mc
+  </code>
+<br><br><br>
+
+<svg width=100% height="10" class="sectionbar">
+    <rect width=100% height="9" style="fill:rgb(214, 169, 45);stroke-width:3;">
+    Sorry, your browser does not support inline SVG.
+  </svg>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+
+
+
+<h3>Configure Encryption</h3><br><br>
+--- <strong>SSL/HTTPS:</strong><br>
+To encrypt the data written from source to the MinIO S3 worm storage, we need to enable HTTPS and for that we need to either send a Certificate Signing Request (CSR) to a well known Certificate Authority (CA)...or we can take
+a shortcut and install a self-signed CA certificate since this is just a lab/home test environment.<br>
+Configure a self-signed SSL certificate for HTTPS encryption using the 'dead simple' 'certgen' tool to generate self-signed certificates.:
+<br><br>
+- Execute:<br><br>
+<code style="font-weight: bold;">wget https://github.com/minio/certgen/releases/latest/download/certgen-linux-arm64</code><br><br>
+
+<code style="font-weight: bold;">mkdir /root/.minio/certs</code><br><br>
+
+<code style="font-weight: bold;">cd /root/.minio/certs</code><br><br><br>
+
+Command syntax for 'certgen': <e class="cmdex">/root/certgen-linux-arm64 -host hostname_here,ip_address_here</e><br><br>
+
+   ...example:<br><br>
+
+   <code style="font-weight: bold;">/root/certgen-linux-arm64 -host cloudy,192.168.1.125</code><br><br>
+
+….now inside the /root/.minio/certs directory we find the private.key and public.crt<br>
+root@cloudy:~/.minio/certs# <code style="font-weight: bold;">ls -l</code>
+<p class="codeout">
+total 20<br>
+-rw------- 1 root root  241 Sep 20 20:22 private.key  <strong><------ certgen created this</strong><br>
+-rw-r--r-- 1 root root  700 Sep 20 20:22 public.crt     <strong><------ certgen created this</strong><br>
+root@cloudy:~/.minio/certs#</p><br>
+
+
+	- We can start the Minio server w/this command to confirm 'https://<servername>/' connects successfully via browser after running:<br>
+	Syntax: <e class="cmdex">minio server --address ":443" --console-address ":44683" /filesystem1 /filesystem2 /filesystem3 /filesystem4</e><br><br>
+	Example:<br>
+    <code style="font-weight: bold;">/usr/bin/minio server --address ":443" --console-address ":44683" /xfsminio_1 /xfsminio_2 /xfsminio_3 /xfsminio_4</code><br><br>
+
+Confirm a browser can successfully connect:<br>
+- in the browser address bar type: https://servername:443<br>
+...you should see a MinIO console login page. Login with the access-key and secret-key you created earlier.<br><br>
+
+After confirming that works, stop the server (kill -15 `pgrep minio`)<br><br><br>
+
+<svg width=100% height="10" class="sectionbar">
+  <rect width=100% height="9" style="fill:rgb(214, 169, 45);stroke-width:3;">
+  Sorry, your browser does not support inline SVG.
+</svg>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+<strong>Create a MinIO server startup script</strong> to ease starting and stopping the MinIO server. We'll also point to this script later with a systemd service to start MinIO server at boot time.<br><br>
+- Using vi or nano (in this example, vi); create a new script named startminio.sh with the contents underneath the 'vi' command:<br><br>
+
+# <code style="font-weight: bold;">vi startminio.sh</code><br><br>
+<div class="form-outline">
+  <textarea class="form-control bg-secondary text-white" rows="4" readonly>
+#!/bin/bash
+export MINIO_ROOT_USER=cloudburst
+export MINIO_ROOT_PASSWORD=f1rLH1MYEdSLvVWJDko0
+/usr/bin/minio server --address ":443" --console-address ":44683" /xfsminio_1 /xfsminio_2 /xfsminio_3 /xfsminio_4</textarea>
+</div><br>
+
+- Make the startminio.sh script executable:<br>
+# <code style="font-weight: bold;">chmod +x startminio.sh</code><br><br>
+
+- start the MinIO server:<br>
+# <code style="font-weight: bold;">/root/startminio.sh</code><br><br>
+
+     Example:<br>
+root@cloudy:~# <code style="font-weight: bold;">./startminio.sh</code>
+<p class="codeout">
+MinIO Object Storage Server<br>
+Copyright: 2015-2022 MinIO, Inc.<br>
+License: GNU AGPLv3 <https://www.gnu.org/licenses/agpl-3.0.html><br>
+Version: RELEASE.2022-09-17T00-09-45Z (go1.18.6 linux/arm)<br><br>
+
+Status:         4 Online, 0 Offline.<br>
+API: https://192.168.1.125  https://127.0.0.1<br>
+RootUser: cloudburst<br>
+RootPass: f1rLH1MYEdSLvVWJDko0<br>
+Console: https://192.168.1.125:44683 https://127.0.0.1:44683<br>
+RootUser: cloudburst<br>
+RootPass: f1rLH1MYEdSLvVWJDko0<br><br>
+
+Command-line: https://docs.min.io/docs/minio-client-quickstart-guide<br>
+   $ mc alias set myminio https://192.168.1.125 cloudburst f1rLH1MYEdSLvVWJDko)<br><br>
+
+Documentation: https://docs.min.io
+</p>
+
+
+<br><br>
+
+
+<svg width=100% height="10" class="sectionbar">
+    <rect width=100% height="9" style="fill:rgb(214, 169, 45);stroke-width:3;">
+    Sorry, your browser does not support inline SVG.
+  </svg>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+
+
+<h3>Configure S3 object storage</h3><br><br>
+	- Use 'mc' tool to <strong>add the Object Storage</strong> by running the following command:<br>
+	<e class="cmdex">mc config host add ALIAS COS-ENDPOINT ACCESS-KEY SECRET-KEY</e><br><br>
+	    ….example (alias: cos, cos-endpoint:https://cloudy, access-key: cloudburst, secret-key: the string ending in Ddo0:<br>
+root@cloudy:~# <code style="font-weight: bold;">mc config host add cos https://cloudy cloudburst f1rLH1MYEdSLvVWJDdo0 --api S3v4</code>
+<p class="codeout">
+mc: Configuration written to `/root/.mc/config.json`. Please update your access credentials.<br>
+mc: Successfully created `/root/.mc/share`.<br>
+mc: Initialized share uploads `/root/.mc/share/uploads.json` file.<br>
+mc: Initialized share downloads `/root/.mc/share/downloads.json` file.<br>
+Fingerprint of cos public key: bd521fce31116bc4ecc579fd137b77ffae316c974c115b4cc97cb529ccea88b6<br>
+Confirm public key y/N:<br>
+Added `cos` successfully.<br>
+</p>
+<br><br>
+
+	- <strong>Create the immutable S3 bucket:</strong> <e class="cmdex">mc mb &#8211&#8211debug -l ALIAS/BUCKETNAME</e><br><br>
+      …example:<br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">mc mb --debug -l cos/wormbucket</code>
+<p class="codeout">
+mc: <DEBUG> PUT /wormbucket/ HTTP/1.1<br>
+Host: cloudy<br>
+User-Agent: MinIO (linux; arm) minio-go/v7.0.36 mc/RELEASE.2022-09-16T09-16-47Z<br>
+Content-Length: 0<br>
+Authorization: AWS4-HMAC-SHA256 Credential=cloudburst/20220921/us-east-1/s3/aws4_request, SignedHeaders=host;x-amz-bucket-object-lock-enabled;x-amz-content-sha256;x-amz-date, Signature=**REDACTED**<br>
+X-Amz-Bucket-Object-Lock-Enabled: true<br>
+X-Amz-Content-Sha256: UNSIGNED-PAYLOAD<br>
+X-Amz-Date: 20220921T004013Z<br>
+Accept-Encoding: gzip<br><br>
+
+mc: <DEBUG> HTTP/1.1 200 OK<br>
+Content-Length: 0<br>
+Accept-Ranges: bytes<br>
+Content-Security-Policy: block-all-mixed-content<br>
+Date: Wed, 21 Sep 2022 00:40:13 GMT<br>
+Location: /wormbucket<br>
+Server: MinIO<br>
+Strict-Transport-Security: max-age=31536000; includeSubDomains<br>
+Vary: Origin<br>
+Vary: Accept-Encoding<br>
+X-Amz-Request-Id: 1716B943E035127B<br>
+X-Content-Type-Options: nosniff<br>
+X-Xss-Protection: 1; mode=block<br><br>
+
+mc: <DEBUG> TLS Certificate found:<br>
+mc: <DEBUG>  >> Organization: Certgen Development<br>
+mc: <DEBUG>  >> Expires: 2023-09-21 00:22:11 +0000 UTC<br>
+mc: <DEBUG> Response Time:  52.117027ms<br><br>
+
+Bucket created successfully `cos/wormbucket`.
+</p>
+<br>
+	- And whabam! Bucket created and 'Object Locking:' is 'Enabled' (per MinIO admin page which you can reach via https://servername ...in our case https://cloudy)<br><br>
+<img src="./minioUI_worm910x528.PNG" alt="minio worm bucket success" width="910" height="528"></img><br><br>
+
+
+<br><br>
+
+
+<svg width=100% height="10" class="sectionbar">
+    <rect width=100% height="9" style="fill:rgb(214, 169, 45);stroke-width:3;">
+    Sorry, your browser does not support inline SVG.
+  </svg>
+  <p>&nbsp;</p>
+  <p>&nbsp;</p>
+
+
+<h3>Automate starting MinIO immutable S3 storage at boot time</h3><br><br>
+
+---- Now that we have a working MinIO server with immutable S3 storage, let's <strong>create a systemd service to start MinIO server automatically at boot time</strong> and allow for easier service manual stop and start.<br><br>
+
+- First, identify the the systemctl units related to the XFS filesystem mountpoints which we named xfsminio_1 through _4 via:<br>
+
+root@cloudy:/etc/systemd# <code style="font-weight: bold;">systemctl list-units | grep 'xfsminio_' | awk '{ print $1 }'</code>
+<p class="codeout">xfsminio_1.mount<br>
+xfsminio_2.mount<br>
+xfsminio_3.mount<br>
+xfsminio_4.mount</p><br>
+
+
+- next, create a file named minio.service inside /etc/systemd/system with following contents.<br><br> 
+
+<div class="form-outline">
+  <textarea class="form-control bg-secondary text-white" rows="12" readonly>
+[Unit]
+Description=Minio Storage Service
+After=network.target xfsminio_1.mount xfsminio_2.mount xfsminio_3.mount xfsminio_4.mount
+[Service]
+ExecStart=/root/startminio.sh
+WorkingDirectory=/root/.minio/certs
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=root
+[Install]
+WantedBy=multi-user.target</textarea>
+</div><br><br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;  Notes:<br><ul>
+  <li>we put the minio relevant filesystem *.mount unit names in the 'After=' line so systemctl knows that after the network, those filesystems must be mounted first before systemd is to online the minio.service service</li>
+  <li>ExecStart points to our startup script</li>
+  <li>in this lab setup, the WorkingDirectory is '/root' and the User account is 'root'. For a properly secured setup, one would use a specific user account for minio with it's own working home directory.</li>
+</ul><br>
+
+
+- set proper permissions:<br>
+<code style="font-weight: bold;">chmod 755 minio.service</code><br><br>
+
+- enable the service:<br>
+<code style="font-weight: bold;">systemctl enable minio.service</code><br><br>
+
+- test the minio.service service:<br>
+&nbsp;&nbsp;&nbsp;- ensure minio server is not running currently:<br>
+root@cloudy:~# <code style="font-weight: bold;">ps -ef | grep minio</code><br>
+root        2037    1927  0 13:29 pts/0    00:00:00 grep minio<br><br>
+
+   - start service:<br>
+root@cloudy:~# <code style="font-weight: bold;">systemctl start minio.service</code><br><br>
+
+root@cloudy:~# <code style="font-weight: bold;">ps -ef | grep minio | grep -v grep</code>
+<p class="codeout">
+root        2040       1  0 13:29 ?        00:00:00 /bin/bash /root/startminio.sh<br>
+root        2041    2040 27 13:29 ?        00:00:01 /usr/bin/minio server --address :443 /xfsminio_1 /xfsminio_2 /xfsminio_3 /xfsminio_4<br><br>
+</p>
+
+- now enable the service:<br>
+
+root@cloudy:~# <code style="font-weight: bold;">systemctl enable minio.service</code>
+<p class="codeout">
+Created symlink /etc/systemd/system/multi-user.target.wants/minio.service → /etc/systemd/system/minio.service.
+</p>
+
+<br><br><br>
+
+-- Successful s3cmd upload from a Windows workstation!!:<br><br>
+
+C:\s3cmd-2.2.0>python s3cmd ls<br>
+2022-09-21 00:40  s3://wormbucket<br><br>
+
+C:\s3cmd-2.2.0>python s3cmd sync "C:\Users\warp1\Documents\My Safes\NewDatabase.kdbx" s3://wormbucket<br>
+WARNING: Module python-magic is not available. Guessing MIME types based on file extensions.<br>
+upload: 'C:\Users\warp1\Documents\My Safes\NewDatabase.kdbx' -> 's3://wormbucket/NewDatabase.kdbx' (87902 bytes in 0.1 seconds, 822.69 KB/s) [1 of 1]<br>
+Done. Uploaded 87902 bytes in 1.0 seconds, 85.84 KB/s.<br><br><br>
+
+
+
+
+<svg width=100% height="10" class="sectionbar">
+  <rect width=100% height="9" style="fill:rgb(214, 169, 45);stroke-width:3;">
+  Sorry, your browser does not support inline SVG.
+</svg>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+
+
+<h3>---- Security Hardening:</h3><br><br>
+
+--- <strong>change default SSH port:</strong><br><br>
+
+<code style="font-weight: bold;">vi /etc/ssh/sshd_config</code><br><br>
+
+...change #Port 22 to something else (in this example 2222):<br>
+Port 2222<br><br>
+
+...save the file, then restart sshd:<br>
+
+<code style="font-weight: bold;">systemctl restart ssh</code><br><br><br>
+
+
+
+--- <strong>Firewall:</strong><br><br>
+
+Raspbian uses iptables by default but managing iptables is a royal pain. Let's use Debian's default iptables firewall management tool UFW (Uncomplicated Firewall)!<br><br>
+
+- install UFW:<br>
+<code style="font-weight: bold;">apt-get install ufw</code><br><br>
+
+- confirm it's present but inactive:<br>
+<code style="font-weight: bold;">ufw status verbose</code><br><br>
+
+- allow the non-standard SSH port through:<br>
+<code style="font-weight: bold;">ufw allow 2222</code><br><br>
+
+- allow https through:<br>
+<code style="font-weight: bold;">ufw allow 443</code><br><br>
+
+- allow TCP 44683 (our minio console port we specified) through:><br>
+<code style="font-weight: bold;">ufw allow 44683</code><br><br>
+
+- check rules:<br>
+<code style="font-weight: bold;">ufw status verbose</code><br><br>
+
+
+That's it! The firewall will deny all other connection attempts via other ports.<br><br><br>
+
+
+
+--- <strong>Virtual air gap:</strong><br><br>
+Physical air gapped servers are cutoff from the Internet making them much more secure from external threats.<br>
+The next best thing is a 'virtual' air gap...one in which we configure a method to disable networking to cutoff the MinIO server
+from the outside world via software. In this lab we'll employ scripts to down the Ethernet NIC interface and up the interface via systemd 
+timer schedules. The purpose is to enable the network access just long enough to send some backups to the immutable S3 bucket and then disable
+afterwards.<br><br>
+
+- Create a simple script vgap_on.sh in /root/ with contents:<br><br>
+<div class="form-outline">
+  <textarea class="form-control bg-secondary text-white" rows="3" readonly>
+#!/usr/bin/bash
+ifconfig wlan0 down
+exit 0</textarea>
+</div>
+<br>
+
+
+- Create a second script vgap_off.sh with contents:<br><br>
+<div class="form-outline">
+  <textarea class="form-control bg-secondary text-white" rows="3" readonly>
+#!/usr/bin/bash
+ifconfig wlan0 up
+exit 0</textarea>
+</div>
+<br>
+
+- Make them both executable:<br><br>
+
+<code style="font-weight: bold;">chown 550 vgap_on.sh</code><br>
+
+<code style="font-weight: bold;">chown 550 vgap_off.sh</code><br><br><br>
+
+
+---- Here we will create a systemd service and timer as an alternate, more consistent method than crontab to schedule our virtual air gap to:<br>
+      <ul></ul><li>disable daily at 1:30:30 (up the network interface)</li>
+      <li>enable daily at 2:15:30 (down the network interface)</li>
+      <li>thereby providing a daily 45 minute window where client servers can push backups (s3cmd sync upload commands)</li><br><br>
+
+-- Create file named vgapon.service inside /etc/systemd/system w/contents:<br>
+<div class="form-outline">
+  <textarea class="form-control bg-secondary text-white" rows="11" readonly>
+[Unit]
+Description=Enable Virtual Air Gap
+Wants=vgapon.timer
+
+[Service]
+User=root
+Type=oneshot
+ExecStart=/bin/sh -c '/root/vgap_on.sh'
+
+[Install]
+WantedBy=multi-user.target</textarea>
+</div>
+<br><br>
+
+
+-- create vgapon.timer in /etc/systemd/system w/contents to down the network interface at 2:15:30:<br>
+<div class="form-outline">
+  <textarea class="form-control bg-secondary text-white" rows="10" readonly>
+[Unit]
+Description=Start vgapon.service (enables a virtual air gap)
+Requires=vgapon.service
+
+[Timer]
+Unit=vgapon.service
+OnCalendar=*-*-* 02:15:30
+
+[Install]
+WantedBy=timers.target</textarea>
+</div>
+<br><br>
+
+…….. Repeat for vgapoff.service and vgapoff.timer, like:<br><br>
+
+    - vgapoff.service:<br>
+    <div class="form-outline">
+      <textarea class="form-control bg-secondary text-white" rows="11" readonly>
+[Unit]
+Description=Disable Virtual Air Gap
+Wants=vgapoff.timer
+
+[Service]
+User=root
+Type=oneshot
+ExecStart=/bin/sh -c '/root/vgap_off.sh'
+
+[Install]
+WantedBy=multi-user.target</textarea>
+</div>
+<br><br>
+
+    - vgapoff.timer:<br>
+    <div class="form-outline">
+      <textarea class="form-control bg-secondary text-white" rows="10" readonly>
+[Unit]
+Description=Stop vgapon.service (disables a virtual air gap)
+Requiresi=vgapoff.service
+
+[Timer]
+Unit=vgapoff.service
+OnCalendar=*-*-* 01:30:30
+
+[Install]
+WantedBy=timers.target</textarea>
+</div>
+<br><br>
+
+
+
+-- apply proper perms:<br>
+<code style="font-weight: bold;">chmod 644 vgap*</code><br><br>
+
+-- Enable the services and their timers:<br><br>
+
+root@cloudy:/etc/systemd/system# <code style="font-weight: bold;">systemctl enable vgapon.service</code><br>
+<p class="codeout">Created symlink /etc/systemd/system/multi-user.target.wants/vgapon.service → /etc/systemd/system/vgapon.service.</p>
+
+root@cloudy:/etc/systemd/system# <code style="font-weight: bold;">systemctl enable vgapon.timer</code><br>
+<p class="codeout">Created symlink /etc/systemd/system/timers.target.wants/vgapon.timer → /etc/systemd/system/vgapon.timer.</p>
+
+root@cloudy:/etc/systemd/system# <code style="font-weight: bold;">systemctl enable vgapoff.service</code><br>
+<p class="codeout">Created symlink /etc/systemd/system/multi-user.target.wants/vgapoff.service → /etc/systemd/system/vgapoff.service.</p>
+
+root@cloudy:/etc/systemd/system# <code style="font-weight: bold;">systemctl enable vgapoff.timer</code><br>
+<p class="codeout">Created symlink /etc/systemd/system/timers.target.wants/vgapoff.timer → /etc/systemd/system/vgapoff.timer.</p><br><br><br>
+
+
+-- Status, as we can see, systemctl is aware of the services and their timers. They report as 'inactive (dead)' because they are not actually currently running which is as expected.<br><br>
+
+root@cloudy:/etc/systemd/system# <code style="font-weight: bold;">systemctl status vgapon.service</code><br>
+<p class="codeout">● vgapon.service - Compact memory<br>
+     Loaded: loaded (/etc/systemd/system/vgapon.service; enabled; vendor preset: enabled)<br>
+     Active: inactive (dead)</p><br>
+
+root@cloudy:/etc/systemd/system# <code style="font-weight: bold;">systemctl status vgapon.timer</code><br>
+<p class="codeout">● vgapon.timer - Logs some system statistics to the systemd journal<br>
+     Loaded: loaded (/etc/systemd/system/vgapon.timer; enabled; vendor preset: enabled)<br>
+     Active: inactive (dead)<br>
+    Trigger: n/a<br>
+   Triggers: ● cmpctmem.service</p>p<br>
+
+root@cloudy:/etc/systemd/system# <code style="font-weight: bold;">systemctl status vgapoff.service</code><br>
+<p class="codeout">● vgapoff.service - Compact memory<br>
+     Loaded: loaded (/etc/systemd/system/vgapoff.service; enabled; vendor preset: enabled)<br>
+     Active: inactive (dead)</p><br>
+
+root@cloudy:/etc/systemd/system# <code style="font-weight: bold;">systemctl status vgapoff.timer</code><br>
+<p class="codeout">● vgapoff.timer - Logs some system statistics to the systemd journal<br>
+     Loaded: loaded (/etc/systemd/system/vgapoff.timer; enabled; vendor preset: enabled)<br>
+     Active: inactive (dead)<br>
+    Trigger: n/a<br>
+   Triggers: ● cmpctmem.service</p><br><br>
+
+
+-- We can test by starting the vgapon.service but be prepared to have physical keyboard/monitor access to the system as we will lose network connectivity.<br><br>
+
+root@cloudy:/etc/systemd/system# <code style="font-weight: bold;">systemctl start vgapon.service</code><br><br>
+
+...at this point it should not be possible to remotely connect to the server by any means (SSH, http/https, s3).<br><br>
+
+...to re-establish network connectivity, via phyiscal keyboard/monitor, execute: <code style="font-weight: bold;">systemctl start vgapoff.sh</code><br><br>
+
+
+Schedule any backups to the worm bucket between 1:30:30 and 02:15:30AM daily.<br>
+Obviously adjust the virtual gap times according to your backup schedule.<br>
+Also schedule any backups to start at 1:35AM to give the system 5 minutes plumb NIC with the IP address.<br><br><br>
+
+That's it! We now have a virtually air gapped, secure on-prem cloud storage server using WORM immutable S3 storage with erasure coding in a lab environment!!
+
+<!-- END Font Size Fix: -->        
+</d>        
+                
+<br><br>
+<p>&nbsp;</p>                    
+
+
+    </h4>
+   </div>
+  </div>
+ </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+<section data-bs-version="5.1" class="footer3 cid-s48P1Icc8J" once="footers" id="footer3-i">
+
+
+
+
+
+    <div class="container">
+        <div class="media-container-row align-center mbr-white">
+            <div class="row row-links">
+                <ul class="foot-menu">
+
+
+
+
+
+                <li class="foot-menu-item mbr-fonts-style display-7"><a href="https://rebellian.com/PrivacyPolicy.htm" class="text-success">Privacy Policy</a></li><li class="foot-menu-item mbr-fonts-style display-7"><a href="https://rebellian.com/Terms of Use Agreement.htm" class="text-success">Terms/Disclaimer</a></li><li class="foot-menu-item mbr-fonts-style display-7"><a href="https://rebellian.com" class="text-success">Rebellian.com</a></li></ul>
+            </div>
+
+            <div class="row row-copirayt">
+                <p class="mbr-text mb-0 mbr-fonts-style mbr-white align-center display-7">
+                    © Copyright 2022 rebellian. All Rights Reserved.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section data-bs-version="5.1" class="footer3 cid-s48P1Icc8J" once="footers" id="footer3-i">
+
+<script>
+    var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+} 
+</script>
+
+</body>
+</html>
